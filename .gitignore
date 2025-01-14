@@ -1,0 +1,2 @@
+# Don't include coverage files for now.
+*.out
