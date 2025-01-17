@@ -4,211 +4,293 @@ package kana
 type (
 	Hiragana rune
 	Katakana rune
-	Romaji   string
+	Romaji string
 )
 
 const (
-	hg_a Hiragana = 'あ'
-	hg_i Hiragana = 'い'
-	hg_u Hiragana = 'う'
-	hg_e Hiragana = 'え'
-	hg_o Hiragana = 'お'
+	Hg_a Hiragana = 'あ'
+	Hg_i Hiragana = 'い'
+	Hg_u Hiragana = 'う'
+	Hg_e Hiragana = 'え'
+	Hg_o Hiragana = 'お'
 
-	hg_ka Hiragana = 'か'
-	hg_ki Hiragana = 'き'
-	hg_ku Hiragana = 'く'
-	hg_ke Hiragana = 'け'
-	hg_ko Hiragana = 'こ'
+	Hg_ka Hiragana = 'か'
+	Hg_ki Hiragana = 'き'
+	Hg_ku Hiragana = 'く'
+	Hg_ke Hiragana = 'け'
+	Hg_ko Hiragana = 'こ'
 
-	hg_sa Hiragana = 'さ'
-	hg_si Hiragana = 'し'
-	hg_su Hiragana = 'す'
-	hg_se Hiragana = 'せ'
-	hg_so Hiragana = 'そ'
+	Hg_sa Hiragana = 'さ'
+	Hg_si Hiragana = 'し'
+	Hg_su Hiragana = 'す'
+	Hg_se Hiragana = 'せ'
+	Hg_so Hiragana = 'そ'
 
-	hg_ta Hiragana = 'た'
-	hg_ti Hiragana = 'ち'
-	hg_tu Hiragana = 'つ'
-	hg_te Hiragana = 'て'
-	hg_to Hiragana = 'と'
+	Hg_ta Hiragana = 'た'
+	Hg_ti Hiragana = 'ち'
+	Hg_tu Hiragana = 'つ'
+	Hg_te Hiragana = 'て'
+	Hg_to Hiragana = 'と'
 
-	hg_na Hiragana = 'な'
-	hg_ni Hiragana = 'に'
-	hg_nu Hiragana = 'ぬ'
-	hg_ne Hiragana = 'ね'
-	hg_no Hiragana = 'の'
+	Hg_na Hiragana = 'な'
+	Hg_ni Hiragana = 'に'
+	Hg_nu Hiragana = 'ぬ'
+	Hg_ne Hiragana = 'ね'
+	Hg_no Hiragana = 'の'
 
-	hg_ha Hiragana = 'は'
-	hg_hi Hiragana = 'ひ'
-	hg_hu Hiragana = 'ふ'
-	hg_he Hiragana = 'へ'
-	hg_ho Hiragana = 'ほ'
+	Hg_ha Hiragana = 'は'
+	Hg_hi Hiragana = 'ひ'
+	Hg_hu Hiragana = 'ふ'
+	Hg_he Hiragana = 'へ'
+	Hg_ho Hiragana = 'ほ'
 
-	hg_ma Hiragana = 'ま'
-	hg_mi Hiragana = 'み'
-	hg_mu Hiragana = 'む'
-	hg_me Hiragana = 'め'
-	hg_mo Hiragana = 'も'
+	Hg_ma Hiragana = 'ま'
+	Hg_mi Hiragana = 'み'
+	Hg_mu Hiragana = 'む'
+	Hg_me Hiragana = 'め'
+	Hg_mo Hiragana = 'も'
 
-	hg_ya Hiragana = 'や'
-	hg_yu Hiragana = 'ゆ'
-	hg_yo Hiragana = 'よ'
+	Hg_ya Hiragana = 'や'
+	Hg_yu Hiragana = 'ゆ'
+	Hg_yo Hiragana = 'よ'
 
-	hg_ra Hiragana = 'ら'
-	hg_ri Hiragana = 'り'
-	hg_ru Hiragana = 'る'
-	hg_re Hiragana = 'れ'
-	hg_ro Hiragana = 'ろ'
+	Hg_ra Hiragana = 'ら'
+	Hg_ri Hiragana = 'り'
+	Hg_ru Hiragana = 'る'
+	Hg_re Hiragana = 'れ'
+	Hg_ro Hiragana = 'ろ'
 
-	hg_wa Hiragana = 'わ'
-	hg_wo Hiragana = 'を'
-	hg_n Hiragana = 'ん'
+	Hg_wa Hiragana = 'わ'
+	Hg_wo Hiragana = 'を'
+	Hg_n Hiragana = 'ん'
 
-	hg_ga Hiragana = 'が'
-	hg_gi Hiragana = 'ぎ'
-	hg_gu Hiragana = 'ぐ'
-	hg_ge Hiragana = 'げ'
-	hg_go Hiragana = 'ご'
+	Hg_ga Hiragana = 'が'
+	Hg_gi Hiragana = 'ぎ'
+	Hg_gu Hiragana = 'ぐ'
+	Hg_ge Hiragana = 'げ'
+	Hg_go Hiragana = 'ご'
 
-	hg_za Hiragana = 'ざ'
-	hg_zi Hiragana = 'じ'
-	hg_zu Hiragana = 'ず'
-	hg_ze Hiragana = 'ぜ'
-	hg_zo Hiragana = 'ぞ'
+	Hg_za Hiragana = 'ざ'
+	Hg_zi Hiragana = 'じ'
+	Hg_zu Hiragana = 'ず'
+	Hg_ze Hiragana = 'ぜ'
+	Hg_zo Hiragana = 'ぞ'
 
-	hg_da Hiragana = 'だ'
-	hg_di Hiragana = 'ぢ'
-	hg_du Hiragana = 'づ'
-	hg_de Hiragana = 'で'
-	hg_do Hiragana = 'ど'
+	Hg_da Hiragana = 'だ'
+	Hg_di Hiragana = 'ぢ'
+	Hg_du Hiragana = 'づ'
+	Hg_de Hiragana = 'で'
+	Hg_do Hiragana = 'ど'
 
-	hg_ba Hiragana = 'ば'
-	hg_bi Hiragana = 'び'
-	hg_bu Hiragana = 'ぶ'
-	hg_be Hiragana = 'べ'
-	hg_bo Hiragana = 'ぼ'
+	Hg_ba Hiragana = 'ば'
+	Hg_bi Hiragana = 'び'
+	Hg_bu Hiragana = 'ぶ'
+	Hg_be Hiragana = 'べ'
+	Hg_bo Hiragana = 'ぼ'
 
-	hg_pa Hiragana = 'ぱ'
-	hg_pi Hiragana = 'ぴ'
-	hg_pu Hiragana = 'ぷ'
-	hg_pe Hiragana = 'ぺ'
-	hg_po Hiragana = 'ぽ'
+	Hg_pa Hiragana = 'ぱ'
+	Hg_pi Hiragana = 'ぴ'
+	Hg_pu Hiragana = 'ぷ'
+	Hg_pe Hiragana = 'ぺ'
+	Hg_po Hiragana = 'ぽ'
 
 	// Soma aliases for other common romaji forms.
 	// Warning: Some conflicting forms are not being included.
 	// i.e. "ji" and "zu"
-	hg_shi Hiragana = hg_si
-	hg_chi Hiragana = hg_ti
-	hg_tsu Hiragana = hg_tu
-	hg_fo Hiragana = hg_hu
-	hg_ji Hiragana = hg_zi
+	Hg_shi Hiragana = Hg_si
+	Hg_chi Hiragana = Hg_ti
+	Hg_tsu Hiragana = Hg_tu
+	Hg_fo Hiragana = Hg_hu
+	Hg_ji Hiragana = Hg_zi
 
 	// End Hiragana.
 
-	kk_a Katakana = 'ア'
-	kk_i Katakana = 'イ'
-	kk_u Katakana = 'ウ'
-	kk_e Katakana = 'エ'
-	kk_o Katakana = 'オ'
+	Kk_a Katakana = 'ア'
+	Kk_i Katakana = 'イ'
+	Kk_u Katakana = 'ウ'
+	Kk_e Katakana = 'エ'
+	Kk_o Katakana = 'オ'
 
-	kk_ka Katakana = 'カ'
-	kk_ki Katakana = 'キ'
-	kk_ku Katakana = 'ク'
-	kk_ke Katakana = 'ケ'
-	kk_ko Katakana = 'コ'
+	Kk_ka Katakana = 'カ'
+	Kk_ki Katakana = 'キ'
+	Kk_ku Katakana = 'ク'
+	Kk_ke Katakana = 'ケ'
+	Kk_ko Katakana = 'コ'
 
-	kk_sa Katakana = 'サ'
-	kk_si Katakana = 'シ'
-	kk_su Katakana = 'ス'
-	kk_se Katakana = 'セ'
-	kk_so Katakana = 'ソ'
+	Kk_sa Katakana = 'サ'
+	Kk_si Katakana = 'シ'
+	Kk_su Katakana = 'ス'
+	Kk_se Katakana = 'セ'
+	Kk_so Katakana = 'ソ'
 
-	kk_ta Katakana = 'タ'
-	kk_ti Katakana = 'チ'
-	kk_tu Katakana = 'ツ'
-	kk_te Katakana = 'テ'
-	kk_to Katakana = 'ト'
+	Kk_ta Katakana = 'タ'
+	Kk_ti Katakana = 'チ'
+	Kk_tu Katakana = 'ツ'
+	Kk_te Katakana = 'テ'
+	Kk_to Katakana = 'ト'
 
-	kk_na Katakana = 'ナ'
-	kk_ni Katakana = 'ニ'
-	kk_nu Katakana = 'ヌ'
-	kk_ne Katakana = 'ネ'
-	kk_no Katakana = 'ノ'
+	Kk_na Katakana = 'ナ'
+	Kk_ni Katakana = 'ニ'
+	Kk_nu Katakana = 'ヌ'
+	Kk_ne Katakana = 'ネ'
+	Kk_no Katakana = 'ノ'
 
-	kk_ha Katakana = 'ハ'
-	kk_hi Katakana = 'ヒ'
-	kk_hu Katakana = 'フ'
-	kk_he Katakana = 'ヘ'
-	kk_ho Katakana = 'ホ'
+	Kk_ha Katakana = 'ハ'
+	Kk_hi Katakana = 'ヒ'
+	Kk_hu Katakana = 'フ'
+	Kk_he Katakana = 'ヘ'
+	Kk_ho Katakana = 'ホ'
 
-	kk_ma Katakana = 'マ'
-	kk_mi Katakana = 'ミ'
-	kk_mu Katakana = 'ム'
-	kk_me Katakana = 'メ'
-	kk_mo Katakana = 'モ'
+	Kk_ma Katakana = 'マ'
+	Kk_mi Katakana = 'ミ'
+	Kk_mu Katakana = 'ム'
+	Kk_me Katakana = 'メ'
+	Kk_mo Katakana = 'モ'
 
-	kk_ya Katakana = 'ヤ'
-	kk_yu Katakana = 'ユ'
-	kk_yo Katakana = 'ヨ'
+	Kk_ya Katakana = 'ヤ'
+	Kk_yu Katakana = 'ユ'
+	Kk_yo Katakana = 'ヨ'
 
-	kk_ra Katakana = 'ラ'
-	kk_ri Katakana = 'リ'
-	kk_ru Katakana = 'ル'
-	kk_re Katakana = 'レ'
-	kk_ro Katakana = 'ロ'
+	Kk_ra Katakana = 'ラ'
+	Kk_ri Katakana = 'リ'
+	Kk_ru Katakana = 'ル'
+	Kk_re Katakana = 'レ'
+	Kk_ro Katakana = 'ロ'
 
-	kk_wa Katakana = 'ワ'
-	kk_wo Katakana = 'ヲ'
-	kk_n Katakana = 'ン'
+	Kk_wa Katakana = 'ワ'
+	Kk_wo Katakana = 'ヲ'
+	Kk_n Katakana = 'ン'
 
-	kk_ga Katakana = 'ガ'
-	kk_gi Katakana = 'ギ'
-	kk_gu Katakana = 'グ'
-	kk_ge Katakana = 'ゲ'
-	kk_go Katakana = 'ゴ'
+	Kk_ga Katakana = 'ガ'
+	Kk_gi Katakana = 'ギ'
+	Kk_gu Katakana = 'グ'
+	Kk_ge Katakana = 'ゲ'
+	Kk_go Katakana = 'ゴ'
 
-	kk_za Katakana = 'ザ'
-	kk_zi Katakana = 'ジ'
-	kk_zu Katakana = 'ズ'
-	kk_ze Katakana = 'ゼ'
-	kk_zo Katakana = 'ゾ'
+	Kk_za Katakana = 'ザ'
+	Kk_zi Katakana = 'ジ'
+	Kk_zu Katakana = 'ズ'
+	Kk_ze Katakana = 'ゼ'
+	Kk_zo Katakana = 'ゾ'
 
-	kk_da Katakana = 'ダ'
-	kk_di Katakana = 'ヂ'
-	kk_du Katakana = 'ヅ'
-	kk_de Katakana = 'デ'
-	kk_do Katakana = 'ド'
+	Kk_da Katakana = 'ダ'
+	Kk_di Katakana = 'ヂ'
+	Kk_du Katakana = 'ヅ'
+	Kk_de Katakana = 'デ'
+	Kk_do Katakana = 'ド'
 
-	kk_ba Katakana = 'バ'
-	kk_bi Katakana = 'ビ'
-	kk_bu Katakana = 'ブ'
-	kk_be Katakana = 'ベ'
-	kk_bo Katakana = 'ボ'
+	Kk_ba Katakana = 'バ'
+	Kk_bi Katakana = 'ビ'
+	Kk_bu Katakana = 'ブ'
+	Kk_be Katakana = 'ベ'
+	Kk_bo Katakana = 'ボ'
 
-	kk_pa Katakana = 'パ'
-	kk_pi Katakana = 'ピ'
-	kk_pu Katakana = 'プ'
-	kk_pe Katakana = 'ペ'
-	kk_po Katakana = 'ポ'
+	Kk_pa Katakana = 'パ'
+	Kk_pi Katakana = 'ピ'
+	Kk_pu Katakana = 'プ'
+	Kk_pe Katakana = 'ペ'
+	Kk_po Katakana = 'ポ'
 
 	// Soma aliases for other common romaji forms.
 	// Warning: Some conflicting forms are not being included.
 	// i.e. "ji" and "zu"
-	kk_shi Katakana = kk_si
-	kk_chi Katakana = kk_ti
-	kk_tsu Katakana = kk_tu
-	kk_fo Katakana = kk_hu
-	kk_ji Katakana = kk_zi
+	Kk_shi Katakana = Kk_si
+	Kk_chi Katakana = Kk_ti
+	Kk_tsu Katakana = Kk_tu
+	Kk_fo Katakana = Kk_hu
+	Kk_ji Katakana = Kk_zi
 )
 
 type Kana struct {
+	Romaji, Alt Romaji
 	Hiragana
 	Katakana
 }
 
-var (
-	hiragana map[Romaji]Hiragana
-	katakana map[Romaji]Katakana
-	kana     map[Romaji]Kana
-)
+var KanaList = []Kana{
+	{"a", "", Hg_a, Kk_a},
+	{"i", "", Hg_i, Kk_i},
+	{"u", "", Hg_u, Kk_u},
+	{"e", "", Hg_e, Kk_e},
+	{"o", "", Hg_o, Kk_o},
 
+	{"ka", "", Hg_ka, Kk_ka},
+	{"ki", "", Hg_ki, Kk_ki},
+	{"ku", "", Hg_ku, Kk_ku},
+	{"ke", "", Hg_ke, Kk_ke},
+	{"ko", "", Hg_ko, Kk_ko},
+
+	{"sa", "", Hg_sa, Kk_sa},
+	{"si", "shi", Hg_si, Kk_si},
+	{"su", "", Hg_su, Kk_su},
+	{"se", "", Hg_se, Kk_se},
+	{"so", "", Hg_so, Kk_so},
+
+	{"ta", "", Hg_ta, Kk_ta},
+	{"ti", "chi", Hg_ti, Kk_ti},
+	{"tu", "tsu", Hg_tu, Kk_tu},
+	{"te", "", Hg_te, Kk_te},
+	{"to", "", Hg_to, Kk_to},
+
+	{"na", "", Hg_na, Kk_na},
+	{"ni", "", Hg_ni, Kk_ni},
+	{"nu", "", Hg_nu, Kk_nu},
+	{"ne", "", Hg_ne, Kk_ne},
+	{"no", "", Hg_no, Kk_no},
+
+	{"ha", "", Hg_ha, Kk_ha},
+	{"hi", "", Hg_hi, Kk_hi},
+	{"hu", "fu", Hg_hu, Kk_hu},
+	{"he", "", Hg_he, Kk_he},
+	{"ho", "", Hg_ho, Kk_ho},
+
+	{"ma", "", Hg_ma, Kk_ma},
+	{"mi", "", Hg_mi, Kk_mi},
+	{"mu", "", Hg_mu, Kk_mu},
+	{"me", "", Hg_me, Kk_me},
+	{"mo", "", Hg_mo, Kk_mo},
+
+	{"ya", "", Hg_ya, Kk_ya},
+	{"yu", "", Hg_yu, Kk_yu},
+	{"yo", "", Hg_yo, Kk_yo},
+
+	{"ra", "", Hg_ra, Kk_ra},
+	{"ri", "", Hg_ri, Kk_ri},
+	{"ru", "", Hg_ru, Kk_ru},
+	{"re", "", Hg_re, Kk_re},
+	{"ro", "", Hg_ro, Kk_ro},
+
+	{"wa", "", Hg_wa, Kk_wa},
+	{"wo", "", Hg_wo, Kk_wo},
+	{"n ", "", Hg_n , Kk_n },
+
+	{"ga", "", Hg_ga, Kk_ga},
+	{"gi", "", Hg_gi, Kk_gi},
+	{"gu", "", Hg_gu, Kk_gu},
+	{"ge", "", Hg_ge, Kk_ge},
+	{"go", "", Hg_go, Kk_go},
+
+	{"za", "", Hg_za, Kk_za},
+	{"zi", "ji", Hg_zi, Kk_zi},
+	{"zu", "", Hg_zu, Kk_zu},
+	{"ze", "", Hg_ze, Kk_ze},
+	{"zo", "", Hg_zo, Kk_zo},
+
+	{"da", "", Hg_da, Kk_da},
+	{"di", "", Hg_di, Kk_di},
+	{"du", "", Hg_du, Kk_du},
+	{"de", "", Hg_de, Kk_de},
+	{"do", "", Hg_do, Kk_do},
+
+	{"ba", "", Hg_ba, Kk_ba},
+	{"bi", "", Hg_bi, Kk_bi},
+	{"bu", "", Hg_bu, Kk_bu},
+	{"be", "", Hg_be, Kk_be},
+	{"bo", "", Hg_bo, Kk_bo},
+
+	{"pa", "", Hg_pa, Kk_pa},
+	{"pi", "", Hg_pi, Kk_pi},
+	{"pu", "", Hg_pu, Kk_pu},
+	{"pe", "", Hg_pe, Kk_pe},
+	{"po", "", Hg_po, Kk_po},
+}
