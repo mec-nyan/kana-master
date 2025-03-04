@@ -6,7 +6,6 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-
 func welcome(screen *termy.Termy) {
 	screen.ClearScreen()
 	screen.SaveCurPos()
@@ -34,7 +33,7 @@ func welcome(screen *termy.Termy) {
 	screen.Send()
 
 	screen.MoveTo(8, 10)
-	Type("Press any key to continue...")
+	Type("To continue, any key you press must...")
 
 	GetChar()
 }

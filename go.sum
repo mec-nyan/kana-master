@@ -1,6 +1,4 @@
-github.com/mec-nyan/termy v0.1.0-beta h1:h+RgZUggY2gckz0apsi6zBaRjiX2dCsH8QlncxykpU8=
-github.com/mec-nyan/termy v0.1.0-beta/go.mod h1:YA3WmagTa94N+0/ZyrhGszpyeeWCtKnyweRAMa6u8ko=
-github.com/mec-nyan/termy v0.1.1-beta h1:S7l7Q8gVBGt12PM00tBsfvdZohQPTHGI7AgTQnzATmM=
-github.com/mec-nyan/termy v0.1.1-beta/go.mod h1:YA3WmagTa94N+0/ZyrhGszpyeeWCtKnyweRAMa6u8ko=
+github.com/mec-nyan/termy v0.1.2-beta h1:tk1S0USZTxbpJyzeFkTnN5qDYRil1lMNIRME7ElN4WE=
+github.com/mec-nyan/termy v0.1.2-beta/go.mod h1:YA3WmagTa94N+0/ZyrhGszpyeeWCtKnyweRAMa6u8ko=
 golang.org/x/sys v0.29.0 h1:TPYlXGxvx1MGTn2GiZDhnjPA9wZzZeGKHHmKhHYvgaU=
 golang.org/x/sys v0.29.0/go.mod h1:/VUhepiaJMQUp4+oa/7Zr1D23ma6VTLIYjOOTFZPUcA=

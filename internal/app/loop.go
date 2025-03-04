@@ -7,7 +7,8 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-func MainLoop(screen *termy.Termy) error {
+func MainLoop(screen *termy.Termy, term *termy.TermSettings) error {
+	options(screen, term)
 	welcome(screen)
 
 	/*

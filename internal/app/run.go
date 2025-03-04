@@ -1,8 +1,8 @@
 package app
 
 import (
-	"os"
 	"github.com/mec-nyan/termy"
+	"os"
 )
 
 func Run() error {
@@ -16,7 +16,7 @@ func Run() error {
 
 	screen := termy.NewTermy(os.Stdout)
 
-	err = MainLoop(screen);
+	err = MainLoop(screen, term)
 	if err != nil {
 		return err
 	}
