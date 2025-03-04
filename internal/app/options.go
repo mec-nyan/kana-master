@@ -1,6 +1,11 @@
 package app
 
-import "github.com/mec-nyan/termy"
+import (
+	"github.com/mec-nyan/kana-master/internal/input"
+	"github.com/mec-nyan/kana-master/internal/palette"
+	"github.com/mec-nyan/kana-master/internal/typewriter"
+	"github.com/mec-nyan/termy"
+)
 
 func options(screen *termy.Termy, term *termy.TermSettings) {
 	screen.ClearScreen()
@@ -24,12 +29,12 @@ func options(screen *termy.Termy, term *termy.TermSettings) {
 
 	var padding int = (cols - len(title)) / 2
 	screen.MoveTo(padding, 4)
-	screen.SetFgHex(palette.blue)
+	screen.SetFgHex(palette.Blue)
 	screen.Send()
-	Write(title)
+	typewriter.Write(title)
 
 	screen.Normal()
-	screen.SetFgHex(palette.grey)
+	screen.SetFgHex(palette.Grey)
 	screen.Send()
 
 	var y int = rows / 3
@@ -37,9 +42,9 @@ func options(screen *termy.Termy, term *termy.TermSettings) {
 	for _, opt := range opts {
 		padding = (cols - len(opt)) / 2
 		screen.MoveTo(padding, y)
-		Write(opt)
+		typewriter.Write(opt)
 		y += 2
 	}
 
-	GetChar()
+	input.GetChar()
 }
