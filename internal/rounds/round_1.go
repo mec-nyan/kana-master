@@ -14,7 +14,35 @@ import (
 	"github.com/mec-nyan/termy/colours"
 )
 
-func Round1Fight(screen *termy.Termy, _ *termy.TermSettings) {
+type kanaGroup struct {
+	hg kana.Hiragana
+	kk kana.Katakana
+}
+
+type kanaRow struct {
+	list  map[kana.Romaji]kanaGroup
+	order []kana.Romaji
+}
+
+func Round1Fight(screen *termy.Termy) {
+
+	row := kanaRow{
+		list:  makeKanaRow(),
+		order: []kana.Romaji{"a", "i", "u", "e", "o"},
+	}
+
+	roundXFight(screen, row)
+}
+
+func roundXFight(screen *termy.Termy, row kanaRow) {
+	intro(screen, row)
+
+	tries, score := play(screen, row)
+
+	end(screen, tries, score)
+}
+
+func intro(screen *termy.Termy, row kanaRow) {
 	screen.ClearScreen()
 	screen.Normal()
 	screen.Send()
@@ -25,17 +53,33 @@ func Round1Fight(screen *termy.Termy, _ *termy.TermSettings) {
 	x, y := 4, 2
 	screen.MoveTo(x, y)
 	typewriter.Type("Let's start with these pairs")
-	time.Sleep(1 * time.Second)
+	time.Sleep(500 * time.Millisecond)
 	y += 2
 	screen.MoveTo(x, y)
 	typewriter.Type("romaji: (hiragana, katakana)")
-	time.Sleep(1 * time.Second)
+	time.Sleep(500 * time.Millisecond)
 
-	type kanaGroup struct {
-		hg kana.Hiragana
-		kk kana.Katakana
+	screen.SetFg(colours.White)
+	screen.Send()
+	for _, k := range row.order {
+		y += 2
+		screen.MoveTo(x, y)
+		v := row.list[k]
+		typewriter.Type(string(k) + ": (" + string(v.hg) + ", " + string(v.kk) + ")")
+		time.Sleep(500 * time.Millisecond)
 	}
 
+	screen.SetFgHex(palette.Blue)
+	screen.Send()
+
+	y += 4
+	screen.MoveTo(x, y)
+	typewriter.Type("Press any key to start!")
+
+	input.GetChar()
+}
+
+func makeKanaRow() map[kana.Romaji]kanaGroup {
 	kanaList := make(map[kana.Romaji]kanaGroup, 5)
 	kanaList["a"] = kanaGroup{
 		hg: kana.Hg_a,
@@ -57,27 +101,10 @@ func Round1Fight(screen *termy.Termy, _ *termy.TermSettings) {
 		hg: kana.Hg_o,
 		kk: kana.Kk_o,
 	}
-	kanaOrder := []kana.Romaji{"a", "i", "u", "e", "o"}
+	return kanaList
+}
 
-	screen.SetFg(colours.White)
-	screen.Send()
-	for _, k := range kanaOrder {
-		y += 2
-		screen.MoveTo(x, y)
-		v := kanaList[k]
-		typewriter.Type(string(k) + ": (" + string(v.hg) + ", " + string(v.kk) + ")")
-		time.Sleep(500 * time.Millisecond)
-	}
-
-	screen.SetFgHex(palette.Blue)
-	screen.Send()
-
-	y += 4
-	screen.MoveTo(x, y)
-	typewriter.Type("Press any key to start!")
-
-	input.GetChar()
-
+func play(screen *termy.Termy, row kanaRow) (float64, float64) {
 	tries := 0.0
 	score := 0.0
 	var last kana.Romaji
@@ -86,7 +113,7 @@ func Round1Fight(screen *termy.Termy, _ *termy.TermSettings) {
 	screen.SetFg(colours.Blue)
 	screen.Send()
 
-	y = 2
+	x, y := 4, 2
 	screen.MoveTo(x, y)
 	typewriter.Write("Write in romaji:")
 	screen.SetFgHex(palette.Grey)
@@ -107,14 +134,14 @@ Loop:
 
 		// Get a random kana from the previous list.
 		// Don't ask the same twice in a row.
-		letter := kanaOrder[rand.Intn(len(kanaOrder))]
+		letter := row.order[rand.Intn(len(row.order))]
 		if letter == last {
 			continue
 		}
 		last = letter
 
 		// Show the hiragana and katakana kanas.
-		current := kanaList[letter]
+		current := row.list[letter]
 		y += 2
 		x = 8
 		screen.MoveTo(x, y)
@@ -142,6 +169,10 @@ Loop:
 		time.Sleep(time.Millisecond * 400)
 	}
 
+	return tries, score
+}
+
+func end(screen *termy.Termy, tries, score float64) {
 	screen.ClearScreen()
 	screen.SetFg(colours.Yellow)
 	screen.Send()
@@ -154,5 +185,4 @@ Loop:
 	typewriter.Write("(press any key)")
 
 	input.GetChar()
-
 }
