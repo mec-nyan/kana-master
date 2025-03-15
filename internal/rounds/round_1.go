@@ -25,6 +25,28 @@ type kanaRow struct {
 	order []kana.Romaji
 }
 
+var (
+	goodOnes = []string{
+		"Nicely done!",
+		"That's it",
+		"Yep!",
+		"You're on fire!",
+		"Well done!",
+		"Cool!",
+		"You've got this!",
+	}
+	// TODO: This must be positive comments to cheer them up!
+	badOnes = []string{
+		"Nop...",
+		"Not even close!",
+		"Really?",
+		"Try again!",
+		"That's not it",
+		"Cat?",
+		"???",
+	}
+)
+
 func Round1Fight(screen *termy.Termy) {
 
 	row := kanaRow{
@@ -172,17 +194,17 @@ Loop:
 			break Loop
 		case letter[0]:
 			// TODO: Add different messages.
-			typewriter.Write("Good job!")
+			typewriter.Write(goodOnes[rand.Intn(len(goodOnes))])
 			progress[letter]++
 			score++
 		default:
 			// TODO: What to do if the user misses?
 			if progress[letter] > 0 {
 			}
-			typewriter.Write("Not even close!")
+			typewriter.Write(badOnes[rand.Intn(len(badOnes))])
 		}
 
-		time.Sleep(time.Millisecond * 400)
+		time.Sleep(600 * time.Millisecond)
 	}
 
 	return tries, score
