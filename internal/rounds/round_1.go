@@ -1,6 +1,7 @@
 package rounds
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"strconv"
@@ -107,6 +108,7 @@ func makeKanaRow() map[kana.Romaji]kanaGroup {
 func play(screen *termy.Termy, row kanaRow) (float64, float64) {
 	tries := 0.0
 	score := 0.0
+	progress := map[kana.Romaji]int{}
 	var last kana.Romaji
 
 	screen.ClearScreen()
@@ -126,8 +128,18 @@ func play(screen *termy.Termy, row kanaRow) (float64, float64) {
 Loop:
 	for {
 		y := y
+		x = 8
+
 		screen.RestoreCurPos()
 		screen.ClearToEOS()
+
+		screen.MoveTo(x, y+10)
+		screen.ClearToEOL()
+		screen.SetFgHex(palette.Purple)
+		screen.Send()
+
+		fmt.Printf("<Progress> a %2d -- i %2d -- u %2d -- e %2d -- o %2d",
+			progress["a"], progress["i"], progress["u"], progress["e"], progress["o"])
 
 		screen.SetFgHex(palette.Green)
 		screen.Send()
@@ -143,7 +155,6 @@ Loop:
 		// Show the hiragana and katakana kanas.
 		current := row.list[letter]
 		y += 2
-		x = 8
 		screen.MoveTo(x, y)
 		typewriter.Write(string(current.hg) + " " + string(current.kk) + " => ")
 
@@ -160,9 +171,14 @@ Loop:
 		case 'q':
 			break Loop
 		case letter[0]:
+			// TODO: Add different messages.
 			typewriter.Write("Good job!")
+			progress[letter]++
 			score++
 		default:
+			// TODO: What to do if the user misses?
+			if progress[letter] > 0 {
+			}
 			typewriter.Write("Not even close!")
 		}
 
