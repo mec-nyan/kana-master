@@ -9,12 +9,19 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-func welcome(screen *termy.Termy) {
+func welcome(screen *termy.Termy, animate bool) {
+	printFunc := typewriter.Write
+	delay := 0 * time.Millisecond
+	if animate {
+		printFunc = typewriter.Type
+		delay = 500 * time.Millisecond
+	}
+
 	screen.ClearScreen()
 	screen.SaveCurPos()
-
 	screen.SetFgHex(palette.Grey)
 	screen.Send()
+
 	typewriter.Write("Mec-Nyan's Kana-Master v0.1.0-beta")
 	screen.CurToCol(1)
 	screen.MoveDown(1)
@@ -24,19 +31,19 @@ func welcome(screen *termy.Termy) {
 	screen.Send()
 
 	screen.MoveTo(8, 4)
-	typewriter.Type("  Welcome to Kana-master!")
-	time.Sleep(500 * time.Millisecond)
+	printFunc("  Welcome to Kana-master!")
+	time.Sleep(delay)
 
 	screen.MoveTo(8, 6)
-	typewriter.Type("Learn ひらがな and カタカナ from the command line.")
-	time.Sleep(500 * time.Millisecond)
+	printFunc("Learn ひらがな and カタカナ from the command line.")
+	time.Sleep(delay)
 
 	screen.SetFgHex(palette.Blue)
 	screen.Italics()
 	screen.Send()
 
 	screen.MoveTo(8, 10)
-	typewriter.Type("To continue, any key you press must...")
+	printFunc("To continue, any key you must press...")
 
 	input.GetChar()
 }

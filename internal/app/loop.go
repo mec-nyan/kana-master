@@ -9,18 +9,21 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-func MainLoop(screen *termy.Termy, term *termy.TermSettings) error {
+func MainLoop(screen *termy.Termy, term *termy.TermSettings, opts InitOptions) error {
 	defer endMain(screen)
 
-	_, quit := setOptions(screen, term)
-	if quit {
-		return nil
+	if opts.Welcome {
+		welcome(screen, opts.Animate)
 	}
 
-	welcome(screen)
+	if opts.Options {
+		_, quit := setOptions(screen, term)
+		if quit {
+			return nil
+		}
+	}
 
 	rounds.Round1Fight(screen)
-
 
 	return nil
 }

@@ -5,7 +5,11 @@ import (
 	"os"
 )
 
-func Run() error {
+type InitOptions struct {
+	Animate, Welcome, Options bool
+}
+
+func Run(opts InitOptions) error {
 	fd := int(os.Stdout.Fd())
 	term := termy.New(fd, false)
 	err := term.Cbreaky()
@@ -16,7 +20,7 @@ func Run() error {
 
 	screen := termy.NewTermy(os.Stdout)
 
-	err = MainLoop(screen, term)
+	err = MainLoop(screen, term, opts)
 	if err != nil {
 		return err
 	}
