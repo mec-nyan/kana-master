@@ -13,7 +13,7 @@ func MainLoop(screen *termy.Termy, term *termy.TermSettings, opts InitOptions) e
 	defer endMain(screen)
 
 	if opts.Welcome {
-		welcome(screen, opts.Animate)
+		welcome(screen, term, opts.Animate)
 	}
 
 	if opts.Options {

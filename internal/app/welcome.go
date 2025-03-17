@@ -1,7 +1,9 @@
 package app
 
 import (
+	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/mec-nyan/kana-master/internal/input"
 	"github.com/mec-nyan/kana-master/internal/palette"
@@ -9,13 +11,24 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-func welcome(screen *termy.Termy, animate bool) {
+const header = `
+█   █                      █▀▀█▀▀█                               
+█   █  █████ █████ █████   █  █  █ █████ █████ █████ ████ █████  
+██████ █   █ █   █ █   █   ██ █  █ █   █ █   ▀   █   █    █   █  
+██   █ █████ ██  █ █████   ██ █  █ █████ █████   ██  ████ ██████ 
+██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █    ██   ██  ██   ██   █ 
+██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █ █████   ██  ████ ██   █ 
+`
+
+func welcome(screen *termy.Termy, term *termy.TermSettings, animate bool) {
 	printFunc := typewriter.Write
 	delay := 0 * time.Millisecond
 	if animate {
 		printFunc = typewriter.Type
 		delay = 500 * time.Millisecond
 	}
+
+	_, cols, _ := term.Size() // Shouldn't size be part of "screen"?
 
 	screen.ClearScreen()
 	screen.SaveCurPos()
@@ -27,14 +40,31 @@ func welcome(screen *termy.Termy, animate bool) {
 	screen.MoveDown(1)
 	typewriter.Write("License information and stuff will be here.")
 
+	headerLines := strings.Split(header, "\n")
+	headerWidth := utf8.RuneCountInString(headerLines[1])
+
+	headerX := (cols - headerWidth) / 2
+	headerY := 4
+
+	screen.SetFgHex(palette.Blue)
+	screen.Send()
+
+	for _, line := range headerLines {
+		screen.MoveTo(headerX, headerY)
+		typewriter.Write(line)
+		headerY++
+	}
+
 	screen.SetFgHex(palette.Purple)
 	screen.Send()
 
-	screen.MoveTo(8, 4)
+	y := headerY + 4
+	screen.MoveTo(8, y)
 	printFunc("  Welcome to Kana-master!")
 	time.Sleep(delay)
 
-	screen.MoveTo(8, 6)
+	y += 2
+	screen.MoveTo(8, y)
 	printFunc("Learn ひらがな and カタカナ from the command line.")
 	time.Sleep(delay)
 
@@ -42,8 +72,9 @@ func welcome(screen *termy.Termy, animate bool) {
 	screen.Italics()
 	screen.Send()
 
-	screen.MoveTo(8, 10)
-	printFunc("To continue, any key you must press...")
+	y += 6
+	screen.MoveTo(8, y)
+	printFunc("To continue, press any key")
 
 	input.GetChar()
 }
