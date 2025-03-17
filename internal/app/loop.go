@@ -10,14 +10,17 @@ import (
 )
 
 func MainLoop(screen *termy.Termy, term *termy.TermSettings) error {
+	defer endMain(screen)
 
-	options(screen, term)
+	_, quit := setOptions(screen, term)
+	if quit {
+		return nil
+	}
 
 	welcome(screen)
 
 	rounds.Round1Fight(screen)
 
-	endMain(screen)
 
 	return nil
 }
