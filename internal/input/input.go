@@ -75,9 +75,9 @@ func GetInput() (kana.Romaji, error) {
 		return "", err
 	}
 
-	os.Stdout.Write([]byte{first})
+	os.Stdout.Write([]byte{second})
 
-	romaji = append(romaji, first)
+	romaji = append(romaji, second)
 
 	if starts_with[first] && ends_with[second] {
 		return kana.Romaji(romaji), nil
@@ -89,6 +89,7 @@ func GetInput() (kana.Romaji, error) {
 		if err != nil {
 			return "", err
 		}
+		os.Stdout.Write([]byte{last})
 		romaji = append(romaji, last)
 		if (last == 'i' && second == 'h') ||
 			(last == 'u' && second == 's') {

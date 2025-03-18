@@ -95,6 +95,10 @@ func play(screen *termy.Termy, row kana.KanaRow) (float64, float64) {
 	// Make a copy of the row.
 	prefShuffle := row[:]
 
+	var order []kana.Romaji
+	for _, k := range row {
+		order = append(order, k.Romaji)
+	}
 	// We'll keep track of the tries and the score to know the overall rating.
 	tries := 0.0
 	score := 0.0
@@ -146,27 +150,27 @@ Loop:
 			screen.Send()
 			screen.MoveTo(x, y+11)
 			screen.ClearToEOL()
-			fmt.Printf("a  (%-5s)", strings.Repeat("▄", progress["a"]))
+			fmt.Printf("%s  (%-5s)", order[0], strings.Repeat("▄", progress[order[0]]))
 			screen.SetFgHex(palette.Green)
 			screen.Send()
 			screen.MoveTo(x, y+12)
 			screen.ClearToEOL()
-			fmt.Printf("i  (%-5s)", strings.Repeat("▄", progress["i"]))
+			fmt.Printf("%s  (%-5s)", order[1], strings.Repeat("▄", progress[order[1]]))
 			screen.SetFgHex(palette.Pink)
 			screen.Send()
 			screen.MoveTo(x, y+13)
 			screen.ClearToEOL()
-			fmt.Printf("u  (%-5s)", strings.Repeat("▄", progress["u"]))
+			fmt.Printf("%s  (%-5s)", order[2], strings.Repeat("▄", progress[order[2]]))
 			screen.SetFgHex(palette.Blue)
 			screen.Send()
 			screen.MoveTo(x, y+14)
 			screen.ClearToEOL()
-			fmt.Printf("e  (%-5s)", strings.Repeat("▄", progress["e"]))
+			fmt.Printf("%s  (%-5s)", order[3], strings.Repeat("▄", progress[order[3]]))
 			screen.SetFgHex(palette.Purple)
 			screen.Send()
 			screen.MoveTo(x, y+15)
 			screen.ClearToEOL()
-			fmt.Printf("o  (%-5s)", strings.Repeat("▄", progress["o"]))
+			fmt.Printf("%s  (%-5s)", order[4], strings.Repeat("▄", progress[order[4]]))
 
 			screen.SetFgHex(palette.Green)
 			screen.Send()
@@ -205,10 +209,10 @@ Loop:
 				}
 				typewriter.Write(badOnes[rand.Intn(len(badOnes))])
 			}
-			time.Sleep(600 * time.Millisecond)
+			time.Sleep(1000 * time.Millisecond)
 
-			if progress["a"] >= 5 && progress["i"] >= 5 && progress["u"] >= 5 &&
-				progress["e"] >= 5 && progress["o"] >= 5 {
+			if progress[order[0]] >= 5 && progress[order[1]] >= 5 && progress[order[2]] >= 5 &&
+				progress[order[3]] >= 5 && progress[order[4]] >= 5 {
 				break Loop
 			}
 		}

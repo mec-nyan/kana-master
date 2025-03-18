@@ -29,6 +29,8 @@ func MainLoop(screen *termy.Termy, term *termy.TermSettings, opts InitOptions) e
 
 	rounds.Round1Fight(screen, userOptions)
 
+	rounds.Round2Fight(screen, userOptions)
+
 	return nil
 }
 
