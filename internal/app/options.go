@@ -4,28 +4,21 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/input"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
 	"github.com/mec-nyan/termy"
 )
 
-type Options struct {
-	animationOn  bool
-	usePalette   bool
-	usePairs     bool
-	hiraganaOnly bool
-	katakanaOnly bool
-}
-
 type Opt struct {
 	description string
 	value       bool
 }
 
-type Quit bool
+type Quit = bool
 
-func setOptions(screen *termy.Termy, term *termy.TermSettings) (Options, Quit) {
+func setOptions(screen *termy.Termy, term *termy.TermSettings) (internal.Options, Quit) {
 	screen.ClearScreen()
 	screen.HideCur()
 	defer screen.ShowCur()
@@ -33,12 +26,13 @@ func setOptions(screen *termy.Termy, term *termy.TermSettings) (Options, Quit) {
 	rows, cols, _ := term.Size()
 	title := "Options"
 
-	opts := []Opt{
-		{"Animations", true},
-		{"Custom palette", false},
-		{"Practice pairs", true},
-		{"Practice hiragana", false},
-		{"Practice katakana", false},
+	optsOrder := []string{"animation", "palette", "pairs", "hiragana", "katakana"}
+	opts := map[string]Opt{
+		optsOrder[0]: {"Animations", true},
+		optsOrder[1]: {"Custom palette", false},
+		optsOrder[2]: {"Practice pairs", true},
+		optsOrder[3]: {"Practice hiragana", false},
+		optsOrder[4]: {"Practice katakana", false},
 	}
 
 	screen.Bold()
@@ -61,7 +55,8 @@ func setOptions(screen *termy.Termy, term *termy.TermSettings) (Options, Quit) {
 Loop:
 	for {
 		y := y
-		for i, opt := range opts {
+		for i, key := range optsOrder {
+			opt := opts[key]
 			text := fmt.Sprintf("%-20s [%3s]", opt.description, onOff(opt.value))
 			if current == i {
 				screen.SetFg(2)
@@ -85,7 +80,7 @@ Loop:
 		switch action {
 
 		case 'q':
-			return Options{}, true
+			return internal.Options{}, true
 		case '\x1b':
 			break Loop
 		case 'j', 'n':
@@ -99,12 +94,21 @@ Loop:
 				current = len(opts) - 1
 			}
 		case ' ':
-			opts[current].value = !opts[current].value
+			currenOption := opts[optsOrder[current]]
+			currenOption.value = !currenOption.value
+			opts[optsOrder[current]] = currenOption
 		case '\n':
 			break Loop
 		}
 	}
-	return Options{}, false
+
+	return internal.Options{
+		AnimationOn:  opts["animation"].value,
+		UsePalette:   opts["palette"].value,
+		UsePairs:     opts["pairs"].value,
+		HiraganaOnly: opts["hiragana"].value,
+		KatakanaOnly: opts["katakana"].value,
+	}, false
 }
 
 func onOff(value bool) string {

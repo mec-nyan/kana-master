@@ -3,6 +3,7 @@ package app
 import (
 	"time"
 
+	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/rounds"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
@@ -16,14 +17,17 @@ func MainLoop(screen *termy.Termy, term *termy.TermSettings, opts InitOptions) e
 		welcome(screen, term, opts.Animate)
 	}
 
+	var quit bool
+	var userOptions internal.Options
+
 	if opts.Options {
-		_, quit := setOptions(screen, term)
+		userOptions, quit = setOptions(screen, term)
 		if quit {
 			return nil
 		}
 	}
 
-	rounds.Round1Fight(screen)
+	rounds.Round1Fight(screen, userOptions)
 
 	return nil
 }

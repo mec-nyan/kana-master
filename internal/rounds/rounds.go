@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/input"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
@@ -38,7 +39,7 @@ var (
 	}
 )
 
-func roundXFight(screen *termy.Termy, row kana.KanaRow) {
+func roundXFight(screen *termy.Termy, row kana.KanaRow, _ internal.Options) {
 	intro(screen, row)
 
 	tries, score := play(screen, row)
