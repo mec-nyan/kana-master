@@ -100,7 +100,7 @@ const (
 	Hg_shi Hiragana = Hg_si
 	Hg_chi Hiragana = Hg_ti
 	Hg_tsu Hiragana = Hg_tu
-	Hg_fo  Hiragana = Hg_hu
+	Hg_fu  Hiragana = Hg_hu
 	Hg_ji  Hiragana = Hg_zi
 
 	// End Hiragana.
@@ -197,7 +197,7 @@ const (
 	Kk_shi Katakana = Kk_si
 	Kk_chi Katakana = Kk_ti
 	Kk_tsu Katakana = Kk_tu
-	Kk_fo  Katakana = Kk_hu
+	Kk_fu  Katakana = Kk_hu
 	Kk_ji  Katakana = Kk_zi
 )
 

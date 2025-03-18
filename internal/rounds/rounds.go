@@ -3,7 +3,6 @@ package rounds
 import (
 	"fmt"
 	"math/rand"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -177,12 +176,10 @@ Loop:
 			screen.MoveTo(x, y)
 			typewriter.Write(string(currentKana.Hiragana) + " " + string(currentKana.Katakana) + " => ")
 
-			// TODO: This works for "a, i, u, e, o".
-			// How do we make it work for i.e. "ka, ki, ku, ..."?
-			char, _ := input.GetChar()
-			os.Stdout.Write([]byte{char})
+			// TODO: Handle error here.
+			kana, _ := input.GetInput()
 
-			if char != 'q' {
+			if kana != "q" {
 				tries++
 			}
 
@@ -191,10 +188,10 @@ Loop:
 			y += 2
 			screen.MoveTo(x, y)
 
-			switch char {
-			case 'q', '\x1b':
+			switch kana {
+			case "q", "\x1b":
 				break Loop
-			case letter[0]:
+			case letter:
 				// TODO: Add different messages.
 				typewriter.Write(goodOnes[rand.Intn(len(goodOnes))])
 				if progress[letter] < 5 {
