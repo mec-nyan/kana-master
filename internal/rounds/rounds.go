@@ -38,15 +38,21 @@ var (
 	}
 )
 
-func Fight(screen *termy.Termy, row kana.KanaRow, _ internal.UserOptions) {
-	intro(screen, row)
+func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
+	intro(screen, row, opts)
 
-	tries, score := play(screen, row)
+	tries, score := play(screen, row, opts)
 
-	end(screen, tries, score)
+	end(screen, tries, score, opts)
 }
 
-func intro(screen *termy.Termy, row kana.KanaRow) {
+func intro(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
+	write := typewriter.Write
+	delay := 0 * time.Millisecond
+	if opts.AnimationOn {
+		delay = 500 * time.Millisecond
+		write = typewriter.Type
+	}
 	screen.ClearScreen()
 	screen.Normal()
 	screen.Send()
@@ -56,20 +62,20 @@ func intro(screen *termy.Termy, row kana.KanaRow) {
 
 	x, y := 4, 2
 	screen.MoveTo(x, y)
-	typewriter.Type("Let's start with these pairs")
-	time.Sleep(500 * time.Millisecond)
+	write("Let's start with these pairs")
+	time.Sleep(delay)
 	y += 2
 	screen.MoveTo(x, y)
-	typewriter.Type("romaji: (hiragana, katakana)")
-	time.Sleep(500 * time.Millisecond)
+	write("romaji: (hiragana, katakana)")
+	time.Sleep(delay)
 
 	screen.SetFg(colours.White)
 	screen.Send()
 	for _, v := range row {
 		y += 2
 		screen.MoveTo(x, y)
-		typewriter.Type(string(v.Romaji) + ": (" + string(v.Hiragana) + ", " + string(v.Katakana) + ")")
-		time.Sleep(500 * time.Millisecond)
+		write(string(v.Romaji) + ": (" + string(v.Hiragana) + ", " + string(v.Katakana) + ")")
+		time.Sleep(delay)
 	}
 
 	screen.SetFgHex(palette.Blue)
@@ -77,7 +83,7 @@ func intro(screen *termy.Termy, row kana.KanaRow) {
 
 	y += 4
 	screen.MoveTo(x, y)
-	typewriter.Type("Press any key to start!")
+	write("Press any key to start!")
 
 	input.GetChar()
 }
@@ -89,7 +95,11 @@ func intro(screen *termy.Termy, row kana.KanaRow) {
 // Shuffle again makeing sure we don't start with the same kana
 // we ended the las row,
 // Keep going until the goal (i.e. five correct answers for each kana) is reached.
-func play(screen *termy.Termy, row kana.KanaRow) (float64, float64) {
+func play(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (float64, float64) {
+	write := typewriter.Write
+	if opts.AnimationOn {
+		write = typewriter.Type
+	}
 	// We'll use rand to shuffle the rows each time.
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	// Make a copy of the row.
@@ -112,12 +122,12 @@ func play(screen *termy.Termy, row kana.KanaRow) (float64, float64) {
 
 	x, y := 4, 2
 	screen.MoveTo(x, y)
-	typewriter.Write("Write in romaji:")
+	write("Write in romaji:")
 	screen.SetFgHex(palette.Grey)
 	screen.Send()
 	y += 1
 	screen.MoveTo(x, y)
-	typewriter.Write("(press \"q\" to end this round)")
+	write("(press \"q\" to end this round)")
 	screen.SaveCurPos()
 
 Loop:
@@ -178,7 +188,7 @@ Loop:
 			// Show the hiragana and katakana kanas.
 			y += 2
 			screen.MoveTo(x, y)
-			typewriter.Write(string(currentKana.Hiragana) + " " + string(currentKana.Katakana) + " => ")
+			write(string(currentKana.Hiragana) + " " + string(currentKana.Katakana) + " => ")
 
 			// TODO: Handle error here.
 			kana, _ := input.GetInput()
@@ -197,7 +207,7 @@ Loop:
 				break Loop
 			case letter:
 				// TODO: Add different messages.
-				typewriter.Write(goodOnes[rand.Intn(len(goodOnes))])
+				write(goodOnes[rand.Intn(len(goodOnes))])
 				if progress[letter] < 5 {
 					progress[letter]++
 				}
@@ -207,9 +217,9 @@ Loop:
 				if progress[letter] > 0 {
 					progress[letter]--
 				}
-				typewriter.Write(badOnes[rand.Intn(len(badOnes))])
+				write(badOnes[rand.Intn(len(badOnes))])
 			}
-			time.Sleep(1000 * time.Millisecond)
+			time.Sleep(800 * time.Millisecond)
 
 			if progress[order[0]] >= 5 && progress[order[1]] >= 5 && progress[order[2]] >= 5 &&
 				progress[order[3]] >= 5 && progress[order[4]] >= 5 {
@@ -220,17 +230,21 @@ Loop:
 	return tries, score
 }
 
-func end(screen *termy.Termy, tries, score float64) {
+func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) {
+	write := typewriter.Write
+	if opts.AnimationOn {
+		write = typewriter.Type
+	}
 	screen.ClearScreen()
 	screen.SetFg(colours.Yellow)
 	screen.Send()
 
 	screen.MoveTo(4, 2)
 	perc := int(100 / tries * score)
-	typewriter.Type("You've scored " + strconv.Itoa(perc) + "%")
+	write("You've scored " + strconv.Itoa(perc) + "%")
 
 	screen.MoveTo(4, 5)
-	typewriter.Write("(press any key)")
+	write("(press any key)")
 
 	input.GetChar()
 }
