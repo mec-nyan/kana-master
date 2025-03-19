@@ -10,28 +10,29 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-func MainLoop(screen *termy.Termy, term *termy.TermSettings, opts InitOptions) error {
+func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	defer endMain(screen)
 
-	if opts.Welcome {
-		welcome(screen, term, opts.Animate)
+	if opts.ShowWelcomeScreen {
+		welcome(screen, opts.Animate)
 	}
 
 	var quit bool
-	var userOptions internal.Options
+	var userOptions internal.UserOptions
 
-	if opts.Options {
-		userOptions, quit = setOptions(screen, term)
+	if opts.ShowOptionsScreen {
+		userOptions, quit = setOptions(screen)
 		if quit {
 			return nil
 		}
 	}
 
-	rounds.Round1Fight(screen, userOptions)
-
-	rounds.Round2Fight(screen, userOptions)
-
-	return nil
+	for {
+		_, quit := rounds.SelectRound(screen, userOptions)
+		if quit {
+			return nil
+		}
+	}
 }
 
 func endMain(screen *termy.Termy) {

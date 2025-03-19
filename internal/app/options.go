@@ -18,12 +18,12 @@ type Opt struct {
 
 type Quit = bool
 
-func setOptions(screen *termy.Termy, term *termy.TermSettings) (internal.Options, Quit) {
+func setOptions(screen *termy.Termy) (internal.UserOptions, Quit) {
 	screen.ClearScreen()
 	screen.HideCur()
 	defer screen.ShowCur()
 
-	rows, cols, _ := term.Size()
+	rows, cols, _ := screen.Size()
 	title := "Options"
 
 	optsOrder := []string{"animation", "palette", "pairs", "hiragana", "katakana"}
@@ -80,7 +80,7 @@ Loop:
 		switch action {
 
 		case 'q':
-			return internal.Options{}, true
+			return internal.UserOptions{}, true
 		case '\x1b':
 			break Loop
 		case 'j', 'n':
@@ -102,12 +102,12 @@ Loop:
 		}
 	}
 
-	return internal.Options{
+	return internal.UserOptions{
 		AnimationOn:  opts["animation"].value,
 		UsePalette:   opts["palette"].value,
-		UsePairs:     opts["pairs"].value,
-		HiraganaOnly: opts["hiragana"].value,
-		KatakanaOnly: opts["katakana"].value,
+		PractisePairs:     opts["pairs"].value,
+		PractiseHiragana: opts["hiragana"].value,
+		PractiseKatakana: opts["katakana"].value,
 	}, false
 }
 

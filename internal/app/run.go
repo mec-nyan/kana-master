@@ -1,26 +1,22 @@
 package app
 
 import (
-	"github.com/mec-nyan/termy"
 	"os"
+
+	"github.com/mec-nyan/kana-master/internal"
+	"github.com/mec-nyan/termy"
 )
 
-type InitOptions struct {
-	Animate, Welcome, Options bool
-}
-
-func Run(opts InitOptions) error {
-	fd := int(os.Stdout.Fd())
-	term := termy.New(fd, false)
-	err := term.Cbreaky()
+func Run(opts internal.CLIOptions) error {
+	screen := termy.NewTermy(os.Stdout)
+	err := screen.Cbreaky()
 	if err != nil {
 		return err
 	}
-	defer term.Restore()
+	defer screen.Restore()
 
-	screen := termy.NewTermy(os.Stdout)
 
-	err = MainLoop(screen, term, opts)
+	err = MainLoop(screen, opts)
 	if err != nil {
 		return err
 	}

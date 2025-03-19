@@ -38,7 +38,7 @@ var (
 	}
 )
 
-func roundXFight(screen *termy.Termy, row kana.KanaRow, _ internal.Options) {
+func roundXFight(screen *termy.Termy, row kana.KanaRow, _ internal.UserOptions) {
 	intro(screen, row)
 
 	tries, score := play(screen, row)

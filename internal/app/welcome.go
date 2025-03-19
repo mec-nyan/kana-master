@@ -20,7 +20,7 @@ const header = `
 ██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █ █████   ██  ████ ██   █ 
 `
 
-func welcome(screen *termy.Termy, term *termy.TermSettings, animate bool) {
+func welcome(screen *termy.Termy, animate bool) {
 	printFunc := typewriter.Write
 	delay := 0 * time.Millisecond
 	if animate {
@@ -28,7 +28,7 @@ func welcome(screen *termy.Termy, term *termy.TermSettings, animate bool) {
 		delay = 500 * time.Millisecond
 	}
 
-	_, cols, _ := term.Size() // Shouldn't size be part of "screen"?
+	_, cols, _ := screen.Size()
 
 	screen.ClearScreen()
 	screen.SaveCurPos()

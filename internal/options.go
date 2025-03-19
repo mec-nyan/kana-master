@@ -1,9 +1,17 @@
 package internal
 
-type Options struct {
-	AnimationOn  bool
-	UsePalette   bool
-	UsePairs     bool
-	HiraganaOnly bool
-	KatakanaOnly bool
-}
+type (
+	CLIOptions struct {
+		Animate           bool
+		ShowWelcomeScreen bool
+		ShowOptionsScreen bool
+	}
+
+	UserOptions struct {
+		AnimationOn      bool
+		UsePalette       bool
+		PractisePairs    bool
+		PractiseHiragana bool
+		PractiseKatakana bool
+	}
+)
