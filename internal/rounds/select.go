@@ -2,11 +2,14 @@ package rounds
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
 	"unicode/utf8"
 
 	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/input"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
+	"github.com/mec-nyan/kana-master/pkg/kana"
 	"github.com/mec-nyan/termy"
 )
 
@@ -14,7 +17,7 @@ import (
 // rounds, score, overall, and lets the user select where to go
 // from here.
 func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
-	round int, quit bool,
+	round kana.KanaRow, quit bool,
 ) {
 	writeFunc := typewriter.Write
 	if opts.AnimationOn {
@@ -25,12 +28,38 @@ func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 	screen.UseDefault()
 	screen.Send()
 
-	putCenteredAt(screen, "Round Selection", 4, writeFunc)
-	putCenteredAt(screen, "press any key", 14, writeFunc)
+	putCenteredAt(screen, "Round Selection", 2, writeFunc)
 
-	input.GetChar()
+	rows, _, _ := screen.Size()
+	xPos, yPos := 4, 4
 
-	return 0, true
+	index := 1
+	for _, row := range kana.Rows {
+		if yPos > rows-4 {
+			yPos = 4
+			// TODO: Check against the width of the screen!
+			xPos += 24
+		}
+		screen.MoveTo(xPos, yPos)
+		writeFunc(fmt.Sprintf("%2d: [ ", index))
+		for _, k := range row {
+			writeFunc(string(k.Hiragana) + " ")
+		}
+		writeFunc(" ]")
+		yPos += 2
+		index++
+	}
+
+	putCenteredAt(screen, "Enter a number: ", rows-2, writeFunc)
+
+	res, _ := input.GetChar()
+	if res == 'q' {
+		return kana.KanaRow{}, true
+	}
+
+	i, _ := strconv.Atoi(string(res))
+
+	return kana.Rows[i-1], false
 }
 
 func putCenteredAt(screen *termy.Termy, text string, at int, write func(string)) error {

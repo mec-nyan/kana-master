@@ -10,5 +10,5 @@ func Round1Fight(screen *termy.Termy, opts internal.UserOptions) {
 
 	row := kana.List["a"]
 
-	roundXFight(screen, row, opts)
+	Fight(screen, row, opts)
 }

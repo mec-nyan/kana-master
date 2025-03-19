@@ -28,10 +28,12 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	}
 
 	for {
-		_, quit := rounds.SelectRound(screen, userOptions)
+		round, quit := rounds.SelectRound(screen, userOptions)
 		if quit {
 			return nil
 		}
+
+		rounds.Fight(screen, round, userOptions)
 	}
 }
 
