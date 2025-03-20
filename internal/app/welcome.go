@@ -1,9 +1,10 @@
 package app
 
 import (
+	"os"
 	"strings"
+	"sync"
 	"time"
-	"unicode/utf8"
 
 	"github.com/mec-nyan/kana-master/internal/input"
 	"github.com/mec-nyan/kana-master/internal/palette"
@@ -11,61 +12,72 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
+// TODO: Make a cuter header 🐈
 const header = `
-█   █                      █▀▀█▀▀█                               
-█   █  █████ █████ █████   █  █  █ █████ █████ █████ ████ █████  
-██████ █   █ █   █ █   █   ██ █  █ █   █ █   ▀   █   █    █   █  
-██   █ █████ ██  █ █████   ██ █  █ █████ █████   ██  ████ ██████ 
-██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █    ██   ██  ██   ██   █ 
-██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █ █████   ██  ████ ██   █ 
+█   █                      █▀▀█▀▀█                              
+█   █  █████ █████ █████   █  █  █ █████ █████ █████ ████ █████ 
+██████ █   █ █   █ █   █   ██ █  █ █   █ █   ▀   █   █    █   █ 
+██   █ █████ ██  █ █████   ██ █  █ █████ █████   ██  ████ ██████
+██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █    ██   ██  ██   ██   █
+██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █ █████   ██  ████ ██   █
 `
 
-func welcome(screen *termy.Termy, animate bool) {
-	printFunc := typewriter.Write
+// welcome presents the welcome and selection screen.
+func welcome(screen *termy.Termy, animate bool) (bool, error) {
+	// printFunc := typewriter.Write
+	printCenteredFunc := typewriter.WriteCenterd
 	delay := 0 * time.Millisecond
 	if animate {
-		printFunc = typewriter.Type
+		// printFunc = typewriter.Type
+		printCenteredFunc = typewriter.TypeCentered
 		delay = 500 * time.Millisecond
 	}
 
+	// TODO: Check for minimun height and width.
 	_, cols, _ := screen.Size()
 
+	// Every screen should take care of cleaning and setting up the display.
+	// We shouldn't take for granted that the previous screen cleaned everything up
+	// successfully.
 	screen.ClearScreen()
-	screen.SaveCurPos()
 	screen.SetFgHex(palette.Grey)
 	screen.Send()
 
-	typewriter.Write("Mec-Nyan's Kana-Master v0.1.0-beta")
-	screen.CurToCol(1)
-	screen.MoveDown(1)
-	typewriter.Write("License information and stuff will be here.")
+	// TODO: Select dinamically the correct version.
+	typewriter.Write("Mec-Nyan's Kana-Master v0.1.0-beta.")
+	screen.MoveTo(1, 2)
+	typewriter.Write("Kana-Master is released under GPL-3.0 license.")
 
 	headerLines := strings.Split(header, "\n")
-	headerWidth := utf8.RuneCountInString(headerLines[1])
 
-	headerX := (cols - headerWidth) / 2
+	// Center the banner.
 	headerY := 4
+	headerX := 1
 
 	screen.SetFgHex(palette.Blue)
 	screen.Send()
 
 	for _, line := range headerLines {
 		screen.MoveTo(headerX, headerY)
-		typewriter.Write(line)
+		typewriter.WriteCenterd(line, cols)
 		headerY++
 	}
 
 	screen.SetFgHex(palette.Purple)
 	screen.Send()
 
-	y := headerY + 4
-	screen.MoveTo(8, y)
-	printFunc("  Welcome to Kana-master!")
+	y := headerY + 2
+	screen.MoveTo(1, y)
+	// For some reason, these icons are printed fine (right number of cols is detected)
+	// but hiragana and katakana aren't.
+	printCenteredFunc("    Welcome to Kana-master!    ", cols)
 	time.Sleep(delay)
 
 	y += 2
-	screen.MoveTo(8, y)
-	printFunc("Learn ひらがな and カタカナ from the command line.")
+	screen.MoveTo(1, y)
+	// TODO: How to count ひらがな and カタカナ columns???
+	// printCenteredFunc("Learn ひらがな and カタカナ from the command line.", cols)
+	printCenteredFunc("Learn hiragana and katakana from the command line", cols)
 	time.Sleep(delay)
 
 	screen.SetFgHex(palette.Blue)
@@ -73,8 +85,48 @@ func welcome(screen *termy.Termy, animate bool) {
 	screen.Send()
 
 	y += 6
-	screen.MoveTo(8, y)
-	printFunc("To continue, press any key")
+	screen.MoveTo(1, y)
+	printCenteredFunc("To continue, press any key", cols)
+	screen.SaveCurPos()
 
-	input.GetChar()
+	// This is not optimal, but it works...
+	quitChan := make(chan int)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func(screen *termy.Termy) {
+		defer wg.Done()
+		screen.HideCur()
+		defer screen.ShowCur()
+		count := 0
+		for {
+			select {
+			case <-quitChan:
+				os.Stdout.WriteString("Foo!")
+				time.Sleep(500 * time.Millisecond)
+				return
+			default:
+				os.Stdout.WriteString(".")
+				time.Sleep(500 * time.Millisecond)
+				count++
+				if count == 5 {
+					screen.RestoreCurPos()
+					screen.ClearToEOL()
+					count = 0
+				}
+			}
+		}
+	}(screen)
+
+	res, err := input.GetChar()
+	quitChan <- 1
+	wg.Wait()
+	if err != nil {
+		return false, err
+	}
+
+	if res == 'q' {
+		return true, nil
+	}
+
+	return false, nil
 }

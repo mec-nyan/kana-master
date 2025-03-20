@@ -13,11 +13,18 @@ import (
 func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	defer endMain(screen)
 
+	var quit bool
+
 	if opts.ShowWelcomeScreen {
-		welcome(screen, opts.Animate)
+		quit, err := welcome(screen, opts.Animate)
+		if err != nil {
+			return err
+		}
+		if quit {
+			return nil
+		}
 	}
 
-	var quit bool
 	var userOptions internal.UserOptions
 
 	if opts.ShowOptionsScreen {
