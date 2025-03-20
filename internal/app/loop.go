@@ -52,7 +52,10 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	for {
 		// TODO: Go straight to the game. But where?
 		if _menu.items["Play"] {
-			rounds.Fight(screen, round, userOptions)
+			quit = rounds.Fight(screen, round, userOptions)
+			if quit {
+				return nil
+			}
 		}
 		if _menu.items["Settings"] {
 			userOptions, quit = setOptions(screen)

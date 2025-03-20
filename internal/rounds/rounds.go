@@ -38,12 +38,12 @@ var (
 	}
 )
 
-func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
+func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) bool {
 	intro(screen, row, opts)
 
 	tries, score := play(screen, row, opts)
 
-	end(screen, tries, score, opts)
+	return end(screen, tries, score, opts)
 }
 
 func intro(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
@@ -193,7 +193,7 @@ Loop:
 			// TODO: Handle error here.
 			kana, _ := input.GetInput()
 
-			if kana != "q" {
+			if kana != "q" && kana != "\x1b" {
 				tries++
 			}
 
@@ -230,7 +230,7 @@ Loop:
 	return tries, score
 }
 
-func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) {
+func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) bool {
 	write := typewriter.Write
 	if opts.AnimationOn {
 		write = typewriter.Type
@@ -244,7 +244,11 @@ func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) {
 	write("You've scored " + strconv.Itoa(perc) + "%")
 
 	screen.MoveTo(4, 5)
-	write("(press any key)")
+	write("Press any key to continue (q quits)")
 
-	input.GetChar()
+	res, err := input.GetChar()
+	if err != nil {
+		return false
+	}
+	return res == 'q'
 }
