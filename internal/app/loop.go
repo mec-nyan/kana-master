@@ -34,22 +34,25 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 		},
 	}
 
-	// This just kept for developping to allow to skip a screen.
-	if opts.ShowWelcomeScreen {
-		_menu, err := welcome(screen, _menu, opts.Animate)
-		if err != nil {
-			return err
-		}
-		if _menu.items["Quit"] {
-			return nil
-		}
-	}
-
 	var quit bool
 	var userOptions internal.UserOptions
 	round := kana.Rows[0]
 
+	goToWelcome := true
+
 	for {
+
+		// This just kept for developping to allow to skip a screen.
+		if opts.ShowWelcomeScreen && goToWelcome {
+			goToWelcome = false
+			_menu, err := welcome(screen, _menu, opts.Animate)
+			if err != nil {
+				return err
+			}
+			if _menu.items["Quit"] {
+				return nil
+			}
+		}
 		// TODO: Go straight to the game. But where?
 		if _menu.items["Play"] {
 			quit = rounds.Fight(screen, round, userOptions)
@@ -61,6 +64,10 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 			userOptions, quit = setOptions(screen)
 			if quit {
 				return nil
+			}
+			if userOptions.BackToMain {
+				goToWelcome = true
+				continue
 			}
 		}
 		if _menu.items["Round selection"] {

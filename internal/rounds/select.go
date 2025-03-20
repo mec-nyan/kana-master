@@ -3,6 +3,7 @@ package rounds
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"unicode/utf8"
 
@@ -53,6 +54,7 @@ func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 	putCenteredAt(screen, "Enter a number: ", rows-2, writeFunc)
 
 	res, _ := input.GetChar()
+	os.Stdout.Write([]byte{res})
 	if res == 'q' {
 		return kana.KanaRow{}, true
 	}

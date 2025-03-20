@@ -13,5 +13,6 @@ type (
 		PractisePairs    bool
 		PractiseHiragana bool
 		PractiseKatakana bool
+		BackToMain       bool
 	}
 )

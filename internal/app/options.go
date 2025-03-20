@@ -26,13 +26,26 @@ func setOptions(screen *termy.Termy) (internal.UserOptions, Quit) {
 	rows, cols, _ := screen.Size()
 	title := "Options"
 
-	optsOrder := []string{"animation", "palette", "pairs", "hiragana", "katakana"}
-	opts := map[string]Opt{
-		optsOrder[0]: {"Animations", true},
-		optsOrder[1]: {"Custom palette", false},
-		optsOrder[2]: {"Practice pairs", true},
-		optsOrder[3]: {"Practice hiragana", false},
-		optsOrder[4]: {"Practice katakana", false},
+	// TODO: Find a better way!
+	opts := menu{
+		items: map[string]bool{
+			"Animations":        true,
+			"Custom palette":    false,
+			"Practise pairs":    true,
+			"Practise hiragana": false,
+			"Practise katakana": false,
+			"Back to main menu": false,
+			"Quit":              false,
+		},
+		order: []string{
+			"Animations",
+			"Custom palette",
+			"Practise pairs",
+			"Practise hiragana",
+			"Practise katakana",
+			"Back to main menu",
+			"Quit",
+		},
 	}
 
 	screen.Bold()
@@ -55,9 +68,13 @@ func setOptions(screen *termy.Termy) (internal.UserOptions, Quit) {
 Loop:
 	for {
 		y := y
-		for i, key := range optsOrder {
-			opt := opts[key]
-			text := fmt.Sprintf("%-20s [%3s]", opt.description, onOff(opt.value))
+		for i, opt := range opts.order {
+			var text string
+			if opt != "Back to main menu" && opt != "Quit" {
+				text = fmt.Sprintf("%-20s [%3s]", opt, onOff(opts.items[opt]))
+			} else {
+				text = fmt.Sprintf("%-26s", opt)
+			}
 			if current == i {
 				screen.SetFg(2)
 			} else {
@@ -68,7 +85,7 @@ Loop:
 			padding = (cols - len(text)) / 2
 			screen.MoveTo(padding, y)
 			typewriter.Write(text)
-			y += 2
+			y += 3
 		}
 
 		screen.MoveTo((cols-len(exitMsg))/2, rows-8)
@@ -85,29 +102,35 @@ Loop:
 			break Loop
 		case 'j', 'n':
 			current++
-			if current == len(opts) {
+			if current == len(opts.items) {
 				current = 0
 			}
 		case 'k', 'p':
 			current--
 			if current < 0 {
-				current = len(opts) - 1
+				current = len(opts.items) - 1
 			}
 		case ' ':
-			currenOption := opts[optsOrder[current]]
-			currenOption.value = !currenOption.value
-			opts[optsOrder[current]] = currenOption
+			opts.items[opts.order[current]] = !opts.items[opts.order[current]]
 		case '\n':
+			if opts.order[current] == "Quit" {
+				return internal.UserOptions{}, true
+			}
+			if opts.order[current] == "Back to main menu" {
+				opts.items["Back to main menu"] = true
+			}
 			break Loop
 		}
 	}
 
+	// TODO: I don't like this!
 	return internal.UserOptions{
-		AnimationOn:  opts["animation"].value,
-		UsePalette:   opts["palette"].value,
-		PractisePairs:     opts["pairs"].value,
-		PractiseHiragana: opts["hiragana"].value,
-		PractiseKatakana: opts["katakana"].value,
+		AnimationOn:      opts.items["Animations"],
+		UsePalette:       opts.items["Custom palette"],
+		PractisePairs:    opts.items["PractisePairs"],
+		PractiseHiragana: opts.items["Practise hiragana"],
+		PractiseKatakana: opts.items["Practise katakana"],
+		BackToMain:       opts.items["Back to main menu"],
 	}, false
 }
 
