@@ -7,40 +7,65 @@ import (
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/rounds"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
+	"github.com/mec-nyan/kana-master/pkg/kana"
 	"github.com/mec-nyan/termy"
 )
+
+type menu struct {
+	items map[string]bool
+	order []string
+}
 
 func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	defer endMain(screen)
 
-	var quit bool
+	_menu := menu{
+		items: map[string]bool{
+			"Play":            true,
+			"Settings":        false,
+			"Round selection": false,
+			"Quit":            false,
+		},
+		order: []string{
+			"Play",
+			"Settings",
+			"Round selection",
+			"Quit",
+		},
+	}
 
+	// This just kept for developping to allow to skip a screen.
 	if opts.ShowWelcomeScreen {
-		quit, err := welcome(screen, opts.Animate)
+		_menu, err := welcome(screen, _menu, opts.Animate)
 		if err != nil {
 			return err
 		}
-		if quit {
+		if _menu.items["Quit"] {
 			return nil
 		}
 	}
 
+	var quit bool
 	var userOptions internal.UserOptions
-
-	if opts.ShowOptionsScreen {
-		userOptions, quit = setOptions(screen)
-		if quit {
-			return nil
-		}
-	}
+	round := kana.Rows[0]
 
 	for {
-		round, quit := rounds.SelectRound(screen, userOptions)
-		if quit {
-			return nil
+		// TODO: Go straight to the game. But where?
+		if _menu.items["Play"] {
+			rounds.Fight(screen, round, userOptions)
 		}
-
-		rounds.Fight(screen, round, userOptions)
+		if _menu.items["Settings"] {
+			userOptions, quit = setOptions(screen)
+			if quit {
+				return nil
+			}
+		}
+		if _menu.items["Round selection"] {
+			round, quit = rounds.SelectRound(screen, userOptions)
+			if quit {
+				return nil
+			}
+		}
 	}
 }
 

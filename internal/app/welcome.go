@@ -1,9 +1,7 @@
 package app
 
 import (
-	"os"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/mec-nyan/kana-master/internal/input"
@@ -23,7 +21,10 @@ const header = `
 `
 
 // welcome presents the welcome and selection screen.
-func welcome(screen *termy.Termy, animate bool) (bool, error) {
+func welcome(screen *termy.Termy, _menu menu, animate bool) (menu, error) {
+	screen.HideCur()
+	defer screen.ShowCur()
+
 	// printFunc := typewriter.Write
 	printCenteredFunc := typewriter.WriteCenterd
 	delay := 0 * time.Millisecond
@@ -80,53 +81,87 @@ func welcome(screen *termy.Termy, animate bool) (bool, error) {
 	printCenteredFunc("Learn hiragana and katakana from the command line", cols)
 	time.Sleep(delay)
 
-	screen.SetFgHex(palette.Blue)
-	screen.Italics()
-	screen.Send()
+	y += 8
+	selected := 0
+	for {
+		incr := 0
+		// Paint the selection menu.
+		for i, item := range _menu.order {
+			if i == selected {
+				screen.SetFgHex(palette.Green)
+			} else {
+				screen.SetFgHex(palette.Blue)
+			}
+			screen.Send()
+			screen.MoveTo(1, y+incr)
+			typewriter.WriteCenterd("[( "+item+" )]", cols)
+			incr += 3
+		}
 
-	y += 6
-	screen.MoveTo(1, y)
-	printCenteredFunc("To continue, press any key", cols)
-	screen.SaveCurPos()
-
-	// This is not optimal, but it works...
-	quitChan := make(chan int)
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func(screen *termy.Termy) {
-		defer wg.Done()
-		screen.HideCur()
-		defer screen.ShowCur()
-		count := 0
-		for {
-			select {
-			case <-quitChan:
-				os.Stdout.WriteString("Foo!")
-				time.Sleep(500 * time.Millisecond)
-				return
-			default:
-				os.Stdout.WriteString(".")
-				time.Sleep(500 * time.Millisecond)
-				count++
-				if count == 5 {
-					screen.RestoreCurPos()
-					screen.ClearToEOL()
-					count = 0
+		key, err := input.GetChar()
+		if err != nil {
+			return _menu, nil
+		}
+		switch key {
+		case 'j', 'n':
+			selected++
+			if selected == len(_menu.items) {
+				selected = 0
+			}
+		case 'k', 'p':
+			selected--
+			if selected < 0 {
+				selected = len(_menu.items) - 1
+			}
+		case 'q', '\x1b':
+			_menu.items["Quit"] = true
+			return _menu, nil
+		case '\n':
+			item := _menu.order[selected]
+			for k := range _menu.items {
+				if k == item {
+					_menu.items[k] = true
+				} else {
+					_menu.items[k] = false
 				}
 			}
+			return _menu, nil
 		}
-	}(screen)
-
-	res, err := input.GetChar()
-	quitChan <- 1
-	wg.Wait()
-	if err != nil {
-		return false, err
 	}
 
-	if res == 'q' {
-		return true, nil
-	}
+	/*
+		screen.SaveCurPos()
+		// This is not optimal, but it works...
+		quitChan := make(chan int)
+		var wg sync.WaitGroup
+		wg.Add(1)
+		go func(screen *termy.Termy) {
+			defer wg.Done()
+			screen.HideCur()
+			defer screen.ShowCur()
+			count := 0
+			for {
+				select {
+				case <-quitChan:
+					return
+				default:
+					os.Stdout.WriteString(".")
+					time.Sleep(500 * time.Millisecond)
+					count++
+					if count == 5 {
+						screen.RestoreCurPos()
+						screen.ClearToEOL()
+						count = 0
+					}
+				}
+			}
+		}(screen)
 
-	return false, nil
+		res, err := input.GetChar()
+		quitChan <- 1
+		wg.Wait()
+		if err != nil {
+			return _menu, err
+		}
+	*/
 }
