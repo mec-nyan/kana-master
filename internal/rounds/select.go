@@ -18,7 +18,7 @@ import (
 // rounds, score, overall, and lets the user select where to go
 // from here.
 func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
-	round kana.KanaRow, quit bool,
+	kana.KanaRow, internal.Action,
 ) {
 	writeFunc := typewriter.Write
 	if opts.AnimationOn {
@@ -56,12 +56,12 @@ func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 	res, _ := input.GetChar()
 	os.Stdout.Write([]byte{res})
 	if res == 'q' {
-		return kana.KanaRow{}, true
+		return kana.KanaRow{}, "quit"
 	}
 
 	i, _ := strconv.Atoi(string(res))
 
-	return kana.Rows[i-1], false
+	return kana.Rows[i-1], "play"
 }
 
 func putCenteredAt(screen *termy.Termy, text string, at int, write func(string)) error {

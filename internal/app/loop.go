@@ -34,18 +34,12 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 				return nil
 			}
 		} else if action == "settings" {
-			userOptions, quit = setOptions(screen)
-			if quit {
-				return nil
-			}
-			if userOptions.BackToMain {
-				continue
+			userOptions, action = setOptions(screen)
+			if action == "back" {
+				action = "welcome"
 			}
 		} else if action == "select" {
-			round, quit = rounds.SelectRound(screen, userOptions)
-			if quit {
-				return nil
-			}
+			round, action = rounds.SelectRound(screen, userOptions)
 		} else if action == "continue" {
 			// TODO: set round to next round and set action to "play"
 

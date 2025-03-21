@@ -16,9 +16,7 @@ type options struct {
 	order []string
 }
 
-type Quit = bool
-
-func setOptions(screen *termy.Termy) (internal.UserOptions, Quit) {
+func setOptions(screen *termy.Termy) (internal.UserOptions, internal.Action) {
 	screen.ClearScreen()
 	screen.HideCur()
 	defer screen.ShowCur()
@@ -97,9 +95,9 @@ Loop:
 		switch action {
 
 		case 'q':
-			return internal.UserOptions{}, true
+			return internal.UserOptions{}, "quit"
 		case '\x1b':
-			break Loop
+			return internal.UserOptions{}, "back"
 		case 'j', 'n':
 			current++
 			if current == len(opts.items) {
@@ -114,10 +112,10 @@ Loop:
 			opts.items[opts.order[current]] = !opts.items[opts.order[current]]
 		case '\n':
 			if opts.order[current] == "Quit" {
-				return internal.UserOptions{}, true
+				return internal.UserOptions{}, "quit"
 			}
 			if opts.order[current] == "Back to main menu" {
-				opts.items["Back to main menu"] = true
+				return internal.UserOptions{}, "back"
 			}
 			break Loop
 		}
@@ -131,7 +129,7 @@ Loop:
 		PractiseHiragana: opts.items["Practise hiragana"],
 		PractiseKatakana: opts.items["Practise katakana"],
 		BackToMain:       opts.items["Back to main menu"],
-	}, false
+	}, "welcome"
 }
 
 func onOff(value bool) string {
