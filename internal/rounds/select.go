@@ -3,8 +3,6 @@ package rounds
 import (
 	"errors"
 	"fmt"
-	"os"
-	"strconv"
 	"unicode/utf8"
 
 	"github.com/mec-nyan/kana-master/internal"
@@ -53,13 +51,10 @@ func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 
 	putCenteredAt(screen, "Enter a number: ", rows-2, writeFunc)
 
-	res, _ := input.GetChar()
-	os.Stdout.Write([]byte{res})
-	if res == 'q' {
+	i, err := input.GetNumber(3)
+	if err != nil || i == -1 || i > len(kana.Rows) {
 		return kana.KanaRow{}, "quit"
 	}
-
-	i, _ := strconv.Atoi(string(res))
 
 	return kana.Rows[i-1], "play"
 }

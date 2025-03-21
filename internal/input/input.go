@@ -3,6 +3,7 @@ package input
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/mec-nyan/kana-master/pkg/kana"
 )
@@ -15,6 +16,38 @@ func GetChar() (byte, error) {
 	buff := make([]byte, 1)
 	_, err := os.Stdin.Read(buff)
 	return buff[0], err
+}
+
+func GetNumber(maxTries int) (int, error) {
+	res := 0
+	count := 0
+	for {
+		b, err := GetChar()
+		// TODO: Printing should be handled by the caller, but we need to print one
+		// character at a time so... We need to implement a function to enable "echo"
+		// on the screen (see "Termy").
+		os.Stdout.Write([]byte{b})
+		if err != nil {
+			return 0, err
+		}
+		// Accept
+		if b == '\n' {
+			return res, nil
+		}
+		// Abort
+		if b == '\x1b' || b == 'q' {
+			return -1, nil
+		}
+		n, err := strconv.ParseInt(string(b), 10, 0)
+		if err != nil {
+			return 0, err
+		}
+		res = res*10 + int(n)
+		count++
+		if count == maxTries {
+			return res, nil
+		}
+	}
 }
 
 func GetInput() (kana.Romaji, error) {

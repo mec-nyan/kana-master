@@ -103,7 +103,7 @@ func play(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (flo
 	// We'll use rand to shuffle the rows each time.
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	// Make a copy of the row.
-	prefShuffle := row[:]
+	prevShuffle := row[:]
 
 	var order []kana.Romaji
 	for _, k := range row {
@@ -133,12 +133,12 @@ func play(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (flo
 Loop:
 	for {
 		// Shuffle the kanas on every turn.
-		shuffledRow := prefShuffle[:]
+		shuffledRow := prevShuffle[:]
 		rnd.Shuffle(len(shuffledRow), func(i, j int) {
 			shuffledRow[i], shuffledRow[j] = shuffledRow[j], shuffledRow[i]
 		})
 		// Make shure it doesn't start where we ended last time.
-		if shuffledRow[0] == prefShuffle[len(prefShuffle)-1] {
+		if shuffledRow[0] == prevShuffle[len(prevShuffle)-1] {
 			continue
 		}
 		// Play the row.
@@ -149,12 +149,12 @@ Loop:
 			screen.RestoreCurPos()
 			screen.ClearToEOS()
 
+			// Show progress bars.
 			screen.MoveTo(x, y+10)
 			screen.ClearToEOL()
 			screen.SetFgHex(palette.Blue)
 			screen.Send()
 
-			// TODO: Nice progress bars.
 			fmt.Printf("Progress:")
 			for i, v := range order {
 				screen.SetFg(6 - i)
@@ -179,7 +179,13 @@ Loop:
 				tries++
 			}
 
+			// Use double "n" to insert ん
+			if kana == "nn" {
+				kana = "n"
+			}
+
 			letter := currentKana.Romaji
+			letterAlt := currentKana.Alt
 
 			y += 2
 			screen.MoveTo(x, y)
@@ -187,7 +193,7 @@ Loop:
 			switch kana {
 			case "q", "\x1b":
 				break Loop
-			case letter:
+			case letter, letterAlt:
 				// TODO: Add different messages.
 				write(goodOnes[rand.Intn(len(goodOnes))])
 				if progress[letter] < 5 {
