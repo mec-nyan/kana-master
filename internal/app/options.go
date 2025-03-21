@@ -11,9 +11,9 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-type Opt struct {
-	description string
-	value       bool
+type options struct {
+	items map[string]bool
+	order []string
 }
 
 type Quit = bool
@@ -27,7 +27,7 @@ func setOptions(screen *termy.Termy) (internal.UserOptions, Quit) {
 	title := "Options"
 
 	// TODO: Find a better way!
-	opts := menu{
+	opts := options{
 		items: map[string]bool{
 			"Animations":        true,
 			"Custom palette":    false,

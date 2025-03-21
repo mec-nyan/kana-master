@@ -38,7 +38,7 @@ var (
 	}
 )
 
-func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) bool {
+func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (internal.Action, error) {
 	intro(screen, row, opts)
 
 	tries, score := play(screen, row, opts)
@@ -230,7 +230,7 @@ Loop:
 	return tries, score
 }
 
-func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) bool {
+func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) (internal.Action, error) {
 	write := typewriter.Write
 	if opts.AnimationOn {
 		write = typewriter.Type
@@ -248,7 +248,12 @@ func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) b
 
 	res, err := input.GetChar()
 	if err != nil {
-		return false
+		return "", err
 	}
-	return res == 'q'
+	switch res {
+	case 'q':
+		return "quit", nil
+	default:
+		return "continue", nil
+	}
 }

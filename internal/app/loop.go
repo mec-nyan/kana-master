@@ -11,70 +11,46 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-type menu struct {
-	items map[string]bool
-	order []string
-}
-
 func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	defer endMain(screen)
 
-	_menu := menu{
-		items: map[string]bool{
-			"Play":            true,
-			"Settings":        false,
-			"Round selection": false,
-			"Quit":            false,
-		},
-		order: []string{
-			"Play",
-			"Settings",
-			"Round selection",
-			"Quit",
-		},
-	}
-
 	var quit bool
+	var err error
 	var userOptions internal.UserOptions
-	round := kana.Rows[0]
 
-	goToWelcome := true
+	var action internal.Action = "welcome"
+	round := kana.Rows[0]
 
 	for {
 
-		// This just kept for developping to allow to skip a screen.
-		if opts.ShowWelcomeScreen && goToWelcome {
-			goToWelcome = false
-			_menu, err := welcome(screen, _menu, opts.Animate)
+		if action == "welcome" {
+			action, err = welcome(screen, opts.Animate)
 			if err != nil {
 				return err
 			}
-			if _menu.items["Quit"] {
-				return nil
-			}
-		}
-		// TODO: Go straight to the game. But where?
-		if _menu.items["Play"] {
-			quit = rounds.Fight(screen, round, userOptions)
+		} else if action == "play" {
+			action, err = rounds.Fight(screen, round, userOptions)
 			if quit {
 				return nil
 			}
-		}
-		if _menu.items["Settings"] {
+		} else if action == "settings" {
 			userOptions, quit = setOptions(screen)
 			if quit {
 				return nil
 			}
 			if userOptions.BackToMain {
-				goToWelcome = true
 				continue
 			}
-		}
-		if _menu.items["Round selection"] {
+		} else if action == "select" {
 			round, quit = rounds.SelectRound(screen, userOptions)
 			if quit {
 				return nil
 			}
+		} else if action == "continue" {
+			// TODO: set round to next round and set action to "play"
+
+		} else if action == "quit" {
+			return nil
 		}
 	}
 }

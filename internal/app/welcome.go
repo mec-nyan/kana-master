@@ -4,11 +4,19 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/input"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
 	"github.com/mec-nyan/termy"
 )
+
+var mainMenu = internal.Menu{
+	{Action: "play", Description: "Play"},
+	{Action: "settings", Description: "Settings"},
+	{Action: "select", Description: "Round selection"},
+	{Action: "quit", Description: "Quit"},
+}
 
 // TODO: Make a cuter header 🐈
 const header = `
@@ -21,7 +29,7 @@ const header = `
 `
 
 // welcome presents the welcome and selection screen.
-func welcome(screen *termy.Termy, _menu menu, animate bool) (menu, error) {
+func welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 	screen.HideCur()
 	defer screen.ShowCur()
 
@@ -86,7 +94,7 @@ func welcome(screen *termy.Termy, _menu menu, animate bool) (menu, error) {
 	for {
 		incr := 0
 		// Paint the selection menu.
-		for i, item := range _menu.order {
+		for i, item := range mainMenu {
 			if i == selected {
 				screen.SetFgHex(palette.Green)
 			} else {
@@ -94,38 +102,30 @@ func welcome(screen *termy.Termy, _menu menu, animate bool) (menu, error) {
 			}
 			screen.Send()
 			screen.MoveTo(1, y+incr)
-			typewriter.WriteCenterd("[( "+item+" )]", cols)
+			typewriter.WriteCenterd("[( "+string(item.Description)+" )]", cols)
 			incr += 3
 		}
 
 		key, err := input.GetChar()
 		if err != nil {
-			return _menu, nil
+			return "", err
 		}
 		switch key {
 		case 'j', 'n':
 			selected++
-			if selected == len(_menu.items) {
+			if selected == len(mainMenu) {
 				selected = 0
 			}
 		case 'k', 'p':
 			selected--
 			if selected < 0 {
-				selected = len(_menu.items) - 1
+				selected = len(mainMenu) - 1
 			}
 		case 'q', '\x1b':
-			_menu.items["Quit"] = true
-			return _menu, nil
+			return "quit", nil
 		case '\n':
-			item := _menu.order[selected]
-			for k := range _menu.items {
-				if k == item {
-					_menu.items[k] = true
-				} else {
-					_menu.items[k] = false
-				}
-			}
-			return _menu, nil
+			item := mainMenu[selected]
+			return item.Action, nil
 		}
 	}
 
