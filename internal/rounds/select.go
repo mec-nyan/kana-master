@@ -17,13 +17,13 @@ import (
 // SelectRound presents a screen with information about completed
 // rounds, score, overall, and lets the user select where to go
 // from here.
-func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
+func SelectRound(screen *termy.Termy, opts internal.UserOptions)  (
 	kana.KanaRow, internal.Action,
 ) {
 	writeFunc := typewriter.Write
-	if opts.AnimationOn {
-		writeFunc = typewriter.Type
-	}
+	// if opts.AnimationOn {
+	// 	writeFunc = typewriter.Type
+	// }
 
 	screen.ClearScreen()
 	screen.UseDefault()
