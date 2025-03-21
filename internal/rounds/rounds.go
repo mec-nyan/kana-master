@@ -203,8 +203,14 @@ Loop:
 			}
 			time.Sleep(800 * time.Millisecond)
 
-			if progress[order[0]] >= 5 && progress[order[1]] >= 5 && progress[order[2]] >= 5 &&
-				progress[order[3]] >= 5 && progress[order[4]] >= 5 {
+			finish := true
+			for _, prog := range progress {
+				if prog < 5 {
+					finish = false
+					break
+				}
+			}
+			if finish {
 				break Loop
 			}
 		}

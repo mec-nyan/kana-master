@@ -41,7 +41,11 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 		} else if action == "select" {
 			round, action = rounds.SelectRound(screen, userOptions)
 		} else if action == "continue" {
-			// TODO: set round to next round and set action to "play"
+			// TODO: When we reach the end, present an ending screen.
+			// Maybe continue to next stage (i.e. from "Hiragana" to
+			// "Katakana", from "rows" to "columns", etc).
+			round = rounds.NextRow(round)
+			action = "play"
 
 		} else if action == "quit" {
 			return nil

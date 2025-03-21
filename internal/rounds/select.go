@@ -17,7 +17,7 @@ import (
 // SelectRound presents a screen with information about completed
 // rounds, score, overall, and lets the user select where to go
 // from here.
-func SelectRound(screen *termy.Termy, opts internal.UserOptions)  (
+func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 	kana.KanaRow, internal.Action,
 ) {
 	writeFunc := typewriter.Write
@@ -87,4 +87,21 @@ func putCenteredAt(screen *termy.Termy, text string, at int, write func(string))
 	write(text)
 
 	return nil
+}
+
+func NextRow(row kana.KanaRow) kana.KanaRow {
+	current := row[0].Romaji
+	rowIdx := 0
+	for i, r := range kana.Rows {
+		if r[0].Romaji == current {
+			rowIdx = i + 1
+			break
+		}
+	}
+	if rowIdx == len(kana.Rows) {
+		// Wrap around!
+		// TODO: Say you reach the end of the game/stage.
+		rowIdx = 0
+	}
+	return kana.Rows[rowIdx]
 }
