@@ -1,4 +1,4 @@
-package rounds
+package selection
 
 import (
 	"errors"
@@ -53,10 +53,10 @@ func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 
 	i, err := input.GetNumber(3)
 	if err != nil || i == -1 || i > len(kana.Rows) {
-		return kana.KanaRow{}, "quit"
+		return kana.KanaRow{}, internal.Quit
 	}
 
-	return kana.Rows[i-1], "play"
+	return kana.Rows[i-1], internal.Play
 }
 
 func putCenteredAt(screen *termy.Termy, text string, at int, write func(string)) error {

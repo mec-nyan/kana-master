@@ -1,4 +1,4 @@
-package app
+package options
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ type options struct {
 	order []string
 }
 
-func setOptions(screen *termy.Termy) (internal.UserOptions, internal.Action) {
+func SetOptions(screen *termy.Termy) (internal.UserOptions, internal.Action) {
 	screen.ClearScreen()
 	screen.HideCur()
 	defer screen.ShowCur()
@@ -95,9 +95,9 @@ Loop:
 		switch action {
 
 		case 'q':
-			return internal.UserOptions{}, "quit"
+			return internal.UserOptions{}, internal.Quit
 		case '\x1b':
-			return internal.UserOptions{}, "back"
+			return internal.UserOptions{}, internal.Back
 		case 'j', 'n':
 			current++
 			if current == len(opts.items) {
@@ -112,10 +112,10 @@ Loop:
 			opts.items[opts.order[current]] = !opts.items[opts.order[current]]
 		case '\n':
 			if opts.order[current] == "Quit" {
-				return internal.UserOptions{}, "quit"
+				return internal.UserOptions{}, internal.Quit
 			}
 			if opts.order[current] == "Back to main menu" {
-				return internal.UserOptions{}, "back"
+				return internal.UserOptions{}, internal.Back
 			}
 			break Loop
 		}
@@ -129,7 +129,7 @@ Loop:
 		PractiseHiragana: opts.items["Practise hiragana"],
 		PractiseKatakana: opts.items["Practise katakana"],
 		BackToMain:       opts.items["Back to main menu"],
-	}, "welcome"
+	}, internal.Welcome
 }
 
 func onOff(value bool) string {

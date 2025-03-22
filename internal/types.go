@@ -1,10 +1,11 @@
 package internal
 
-type Action = string
+type Action = uint
 type Description = string
 
 type MenuItem struct {
 	Action
 	Description
 }
+
 type Menu []MenuItem

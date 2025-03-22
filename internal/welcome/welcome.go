@@ -1,4 +1,4 @@
-package app
+package welcome
 
 import (
 	"strings"
@@ -12,24 +12,14 @@ import (
 )
 
 var mainMenu = internal.Menu{
-	{Action: "play", Description: "Play"},
-	{Action: "settings", Description: "Settings"},
-	{Action: "select", Description: "Round selection"},
-	{Action: "quit", Description: "Quit"},
+	{Action: internal.Play, Description: "Play"},
+	{Action: internal.Settings, Description: "Settings"},
+	{Action: internal.Select, Description: "Round selection"},
+	{Action: internal.Quit, Description: "Quit"},
 }
 
-// TODO: Make a cuter header 🐈
-const header = `
-█   █                      █▀▀█▀▀█                              
-█   █  █████ █████ █████   █  █  █ █████ █████ █████ ████ █████ 
-██████ █   █ █   █ █   █   ██ █  █ █   █ █   ▀   █   █    █   █ 
-██   █ █████ ██  █ █████   ██ █  █ █████ █████   ██  ████ ██████
-██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █    ██   ██  ██   ██   █
-██   █ ██  █ ██  █ ██  █   ██ █  █ ██  █ █████   ██  ████ ██   █
-`
-
-// welcome presents the welcome and selection screen.
-func welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
+// Welcome presents the Welcome and selection screen.
+func Welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 	screen.HideCur()
 	defer screen.ShowCur()
 
@@ -57,7 +47,7 @@ func welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 	screen.MoveTo(1, 2)
 	typewriter.Write("Kana-Master is released under GPL-3.0 license.")
 
-	headerLines := strings.Split(header, "\n")
+	headerLines := strings.Split(banner, "\n")
 
 	// Center the banner.
 	headerY := 4
@@ -108,7 +98,7 @@ func welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 
 		key, err := input.GetChar()
 		if err != nil {
-			return "", err
+			return internal.NoOp, err
 		}
 		switch key {
 		case 'j', 'n':
@@ -122,10 +112,9 @@ func welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 				selected = len(mainMenu) - 1
 			}
 		case 'q', '\x1b':
-			return "quit", nil
+			return internal.Quit, nil
 		case '\n':
-			item := mainMenu[selected]
-			return item.Action, nil
+			return mainMenu[selected].Action, nil
 		}
 	}
 

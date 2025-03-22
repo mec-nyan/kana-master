@@ -242,12 +242,12 @@ func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) (
 
 	res, err := input.GetChar()
 	if err != nil {
-		return "", err
+		return internal.NoOp, err
 	}
 	switch res {
 	case 'q':
-		return "quit", nil
+		return internal.Quit, nil
 	default:
-		return "continue", nil
+		return internal.Continue, nil
 	}
 }

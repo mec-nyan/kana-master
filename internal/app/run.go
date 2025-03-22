@@ -3,8 +3,9 @@ package app
 import (
 	"os"
 
-	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/termy"
+
+	"github.com/mec-nyan/kana-master/internal"
 )
 
 func Run(opts internal.CLIOptions) error {
@@ -14,7 +15,6 @@ func Run(opts internal.CLIOptions) error {
 		return err
 	}
 	defer screen.Restore()
-
 
 	err = MainLoop(screen, opts)
 	if err != nil {

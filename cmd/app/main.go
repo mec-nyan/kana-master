@@ -1,3 +1,4 @@
+// This is the entry point of our program.
 package main
 
 import (
