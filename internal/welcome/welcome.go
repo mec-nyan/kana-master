@@ -11,7 +11,7 @@ import (
 	"github.com/mec-nyan/termy"
 )
 
-var mainMenu = internal.Menu{
+var mainMenu = internal.ActionMenu{
 	{Action: internal.Play, Description: "Play"},
 	{Action: internal.Settings, Description: "Settings"},
 	{Action: internal.Select, Description: "Round selection"},
@@ -24,7 +24,7 @@ func Welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 	defer screen.ShowCur()
 
 	// printFunc := typewriter.Write
-	printCenteredFunc := typewriter.WriteCenterd
+	printCenteredFunc := typewriter.WriteCentered
 	delay := 0 * time.Millisecond
 	if animate {
 		// printFunc = typewriter.Type
@@ -58,7 +58,7 @@ func Welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 
 	for _, line := range headerLines {
 		screen.MoveTo(headerX, headerY)
-		typewriter.WriteCenterd(line, cols)
+		typewriter.WriteCentered(line, cols)
 		headerY++
 	}
 
@@ -92,7 +92,7 @@ func Welcome(screen *termy.Termy, animate bool) (internal.Action, error) {
 			}
 			screen.Send()
 			screen.MoveTo(1, y+incr)
-			typewriter.WriteCenterd("[( "+string(item.Description)+" )]", cols)
+			typewriter.WriteCentered("[( "+string(item.Description)+" )]", cols)
 			incr += 3
 		}
 

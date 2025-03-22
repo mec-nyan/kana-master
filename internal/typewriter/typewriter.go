@@ -17,7 +17,7 @@ func Type(str string) {
 	}
 }
 
-func WriteCenterd(str string, size int) {
+func WriteCentered(str string, size int) {
 	Write(padStr(str, size))
 }
 

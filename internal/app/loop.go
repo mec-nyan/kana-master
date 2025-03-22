@@ -8,8 +8,8 @@ import (
 	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/options"
 	"github.com/mec-nyan/kana-master/internal/palette"
+	"github.com/mec-nyan/kana-master/internal/play"
 	"github.com/mec-nyan/kana-master/internal/rounds"
-	"github.com/mec-nyan/kana-master/internal/selection"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
 	"github.com/mec-nyan/kana-master/internal/welcome"
 
@@ -26,6 +26,7 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
+	// mode := internal.RowMode
 
 	for {
 
@@ -39,7 +40,7 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 			if round == nil {
 				round = kana.Rows[0]
 			}
-			action, err = rounds.Fight(screen, round, userOptions)
+			action, err = play.Fight(screen, round, userOptions)
 			if quit {
 				return nil
 			}
@@ -49,14 +50,13 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 				action = internal.Welcome
 			}
 		} else if action == internal.Select {
-			round, action = selection.SelectRound(screen, userOptions)
+			_, action = rounds.SelectMode(screen, userOptions)
 		} else if action == internal.Continue {
 			// TODO: When we reach the end, present an ending screen.
 			// Maybe continue to next stage (i.e. from "Hiragana" to
 			// "Katakana", from "rows" to "columns", etc).
-			round = selection.NextRow(round)
+			round = rounds.NextRow(round)
 			action = internal.Play
-
 		} else if action == internal.Quit {
 			return nil
 		}
