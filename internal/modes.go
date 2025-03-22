@@ -1,7 +1,8 @@
 package internal
 
 const (
-	HiraganaMode Mode = iota
+	NoMode Mode = iota
+	HiraganaMode
 	KatakanaMode
 	PairsMode
 	RowMode
