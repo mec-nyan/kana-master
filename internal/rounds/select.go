@@ -23,10 +23,33 @@ type RoundMode struct {
 	syllabary, group internal.Mode
 }
 
+func getRounds(mode internal.Mode) []kana.KanaRow {
+	var rounds []kana.KanaRow
+	switch mode {
+	case internal.RowMode:
+		for _, row := range kana.List {
+			rounds = append(rounds, row)
+		}
+	case internal.ColMode:
+		cols := [5]kana.KanaRow{}
+		for _, row := range kana.List {
+			for i, k := range row {
+				cols[i] = append(cols[i], k)
+			}
+		}
+		for _, col := range cols {
+			rounds = append(rounds, col)
+		}
+		// TODO: How to separate regular from dakuten.
+		// No need to return anything for "all".
+	}
+	return rounds
+}
+
 // SelectRound presents a screen with information about completed
 // rounds, score, overall, and lets the user select where to go
 // from here.
-func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
+func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions) (
 	kana.KanaRow, internal.Action,
 ) {
 	writeFunc := typewriter.Write
@@ -36,37 +59,112 @@ func SelectRound(screen *termy.Termy, opts internal.UserOptions) (
 
 	screen.ClearScreen()
 	screen.UseDefault()
+	screen.SetFg(1)
 	screen.Send()
 
-	putCenteredAt(screen, "[( Round Selection )]", 2, writeFunc)
+	putCenteredAt(screen, "Round Selection", 2, writeFunc)
 
-	rows, _, _ := screen.Size()
-	xPos, yPos := 4, 4
+	rows, cols, _ := screen.Size()
 
-	index := 1
-	for _, row := range kana.Rows {
-		if yPos > rows-4 {
-			yPos = 4
-			xPos += 24
+	rounds := getRounds(mode.group)
+
+	yPos := 6
+	selected := 0
+	for {
+		yPos := yPos
+		for i, round := range rounds {
+			if i == selected {
+				screen.SetFg(2)
+			} else {
+				screen.SetFg(5)
+			}
+			screen.Send()
+			screen.MoveTo(1, yPos)
+			yPos += 2
+
+			if mode.syllabary == internal.HiraganaMode {
+				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
+					typewriter.WriteCentered(
+						fmt.Sprintf("%c    %c    %c",
+							round[0].Hiragana,
+							round[2].Hiragana,
+							round[4].Hiragana,
+						),
+						cols,
+					)
+				} else {
+					typewriter.WriteCentered(
+						fmt.Sprintf("%c %c %c %c %c",
+							round[0].Hiragana,
+							round[1].Hiragana,
+							round[2].Hiragana,
+							round[3].Hiragana,
+							round[4].Hiragana,
+						),
+						cols,
+					)
+				}
+			} else if mode.syllabary == internal.KatakanaMode {
+				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
+					typewriter.WriteCentered(
+						fmt.Sprintf("%c    %c    %c",
+							round[0].Katakana,
+							round[2].Katakana,
+							round[4].Katakana,
+						),
+						cols,
+					)
+				} else {
+					typewriter.WriteCentered(
+						fmt.Sprintf("%c %c %c %c %c",
+							round[0].Katakana,
+							round[1].Katakana,
+							round[2].Katakana,
+							round[3].Katakana,
+							round[4].Katakana,
+						),
+						cols,
+					)
+				}
+			} else if mode.syllabary == internal.PairsMode {
+				typewriter.WriteCentered(
+					fmt.Sprintf("(%c, %c), (%c, %c), (%c, %c), (%c, %c), (%c, %c)",
+						round[0].Hiragana, round[0].Katakana,
+						round[1].Hiragana, round[1].Katakana,
+						round[2].Hiragana, round[2].Katakana,
+						round[3].Hiragana, round[3].Katakana,
+						round[4].Hiragana, round[4].Katakana,
+					),
+					cols,
+				)
+			}
 		}
-		screen.MoveTo(xPos, yPos)
-		writeFunc(fmt.Sprintf("%2d: [ ", index))
-		for _, k := range row {
-			writeFunc(string(k.Hiragana) + " ")
+
+		screen.MoveTo(1, rows-2)
+		screen.SetFg(5)
+		screen.Send()
+		typewriter.WriteCentered("Do di do di du", cols)
+
+		res, _ := input.GetChar()
+		switch res {
+		case '\x1b':
+			return kana.KanaRow{}, internal.Back
+		case 'q':
+			return kana.KanaRow{}, internal.Quit
+		case 'j', 'n':
+			selected++
+			if selected == len(rounds) {
+				selected = 0
+			}
+		case 'k', 'p':
+			selected--
+			if selected < 0 {
+				selected = len(rounds) - 1
+			}
+		case '\n':
+			return rounds[selected], internal.Continue
 		}
-		writeFunc(" ]")
-		yPos += 2
-		index++
 	}
-
-	putCenteredAt(screen, "Enter a number: ", rows-2, writeFunc)
-
-	i, err := input.GetNumber(3)
-	if err != nil || i == -1 || i > len(kana.Rows) {
-		return kana.KanaRow{}, internal.Quit
-	}
-
-	return kana.Rows[i-1], internal.Play
 }
 
 func SelectMode(screen *termy.Termy, _ internal.UserOptions) (RoundMode, internal.Action) {

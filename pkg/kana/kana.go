@@ -365,7 +365,9 @@ var List = map[Romaji]KanaRow{
 	},
 	"ya": {
 		{"ya", "", Hg_ya, Kk_ya},
+		{},
 		{"yu", "", Hg_yu, Kk_yu},
+		{},
 		{"yo", "", Hg_yo, Kk_yo},
 	},
 	"ra": {
@@ -377,8 +379,10 @@ var List = map[Romaji]KanaRow{
 	},
 	"wa": {
 		{"wa", "", Hg_wa, Kk_wa},
-		{"wo", "", Hg_wo, Kk_wo},
+		{},
 		{"n ", "", Hg_n, Kk_n},
+		{},
+		{"wo", "", Hg_wo, Kk_wo},
 	},
 	"ga": {
 		{"ga", "", Hg_ga, Kk_ga},
