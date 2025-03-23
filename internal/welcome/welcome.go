@@ -14,7 +14,7 @@ import (
 var mainMenu = internal.ActionMenu{
 	{Action: internal.Play, Description: "Play"},
 	{Action: internal.Settings, Description: "Settings"},
-	{Action: internal.Select, Description: "Round selection"},
+	{Action: internal.SelectSyllabary, Description: "Round selection"},
 	{Action: internal.Quit, Description: "Quit"},
 }
 

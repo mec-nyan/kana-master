@@ -26,7 +26,7 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
-	var mode rounds.RoundMode
+	mode := rounds.RoundMode{}
 
 	for {
 		if action == internal.Welcome {
@@ -48,12 +48,21 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 			if action == internal.Back {
 				action = internal.Welcome
 			}
-		} else if action == internal.Select {
-			mode, action = rounds.SelectMode(screen, userOptions)
-			if action == internal.Quit {
-				continue
+		} else if action == internal.SelectSyllabary {
+			mode.Syllabary, action = rounds.SelectSyllabary(screen, userOptions)
+			if action == internal.Back {
+				action = internal.Welcome
 			}
+		} else if action == internal.SelectGroup {
+			mode.Group, action = rounds.SelectGroup(screen, userOptions)
+			if action == internal.Back {
+				action = internal.SelectSyllabary
+			}
+		}else if action == internal.SelectRound {
 			round, action = rounds.SelectRound(screen, mode, userOptions)
+			if action == internal.Back {
+				action = internal.SelectGroup
+			}
 		} else if action == internal.Continue {
 			// TODO: When we reach the end, present an ending screen.
 			// Maybe continue to next stage (i.e. from "Hiragana" to

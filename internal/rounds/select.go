@@ -20,7 +20,7 @@ type MenuScreen struct {
 }
 
 type RoundMode struct {
-	syllabary, group internal.Mode
+	Syllabary, Group internal.Mode
 }
 
 func getRounds(mode internal.Mode) []kana.KanaRow {
@@ -66,7 +66,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 
 	rows, cols, _ := screen.Size()
 
-	rounds := getRounds(mode.group)
+	rounds := getRounds(mode.Group)
 
 	yPos := 6
 	selected := 0
@@ -82,7 +82,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 			screen.MoveTo(1, yPos)
 			yPos += 2
 
-			if mode.syllabary == internal.HiraganaMode {
+			if mode.Syllabary == internal.HiraganaMode {
 				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
 					typewriter.WriteCentered(
 						fmt.Sprintf("%c    %c    %c",
@@ -104,7 +104,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 						cols,
 					)
 				}
-			} else if mode.syllabary == internal.KatakanaMode {
+			} else if mode.Syllabary == internal.KatakanaMode {
 				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
 					typewriter.WriteCentered(
 						fmt.Sprintf("%c    %c    %c",
@@ -126,7 +126,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 						cols,
 					)
 				}
-			} else if mode.syllabary == internal.PairsMode {
+			} else if mode.Syllabary == internal.PairsMode {
 				typewriter.WriteCentered(
 					fmt.Sprintf("(%c, %c), (%c, %c), (%c, %c), (%c, %c), (%c, %c)",
 						round[0].Hiragana, round[0].Katakana,
@@ -143,7 +143,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 		screen.MoveTo(1, rows-2)
 		screen.SetFg(5)
 		screen.Send()
-		typewriter.WriteCentered("Do di do di du", cols)
+		typewriter.WriteCentered("Press Escape to go back", cols)
 
 		res, _ := input.GetChar()
 		switch res {
@@ -167,7 +167,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 	}
 }
 
-func SelectMode(screen *termy.Termy, _ internal.UserOptions) (RoundMode, internal.Action) {
+func SelectSyllabary(screen *termy.Termy, _ internal.UserOptions) (internal.Mode, internal.Action) {
 
 	syllabary := selectionScreen(screen, MenuScreen{
 		title: "Select mode",
@@ -193,8 +193,13 @@ func SelectMode(screen *termy.Termy, _ internal.UserOptions) (RoundMode, interna
 	})
 
 	if syllabary == internal.NoMode {
-		return RoundMode{}, internal.Back
+		return internal.NoMode, internal.Back
 	}
+
+	return syllabary, internal.SelectGroup
+}
+
+func SelectGroup(screen *termy.Termy, _ internal.UserOptions) (internal.Mode, internal.Action) {
 
 	group := selectionScreen(screen, MenuScreen{
 		title: "Select mode",
@@ -225,10 +230,10 @@ func SelectMode(screen *termy.Termy, _ internal.UserOptions) (RoundMode, interna
 	})
 
 	if group == internal.NoMode {
-		return RoundMode{}, internal.Back
+		return internal.NoMode, internal.Back
 	}
 
-	return RoundMode{syllabary: syllabary, group: group}, internal.Continue
+	return group, internal.SelectRound
 }
 
 func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.Mode {
