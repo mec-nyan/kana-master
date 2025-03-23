@@ -261,7 +261,9 @@ var Rows = []KanaRow{
 	},
 	{
 		{"ya", "", Hg_ya, Kk_ya},
+		{},
 		{"yu", "", Hg_yu, Kk_yu},
+		{},
 		{"yo", "", Hg_yo, Kk_yo},
 	},
 	{
@@ -273,8 +275,10 @@ var Rows = []KanaRow{
 	},
 	{
 		{"wa", "", Hg_wa, Kk_wa},
-		{"wo", "", Hg_wo, Kk_wo},
+		{},
 		{"n ", "", Hg_n, Kk_n},
+		{},
+		{"wo", "", Hg_wo, Kk_wo},
 	},
 	{
 		{"ga", "", Hg_ga, Kk_ga},

@@ -27,12 +27,12 @@ func getRounds(mode internal.Mode) []kana.KanaRow {
 	var rounds []kana.KanaRow
 	switch mode {
 	case internal.RowMode:
-		for _, row := range kana.List {
+		for _, row := range kana.Rows {
 			rounds = append(rounds, row)
 		}
 	case internal.ColMode:
 		cols := [5]kana.KanaRow{}
-		for _, row := range kana.List {
+		for _, row := range kana.Rows {
 			for i, k := range row {
 				cols[i] = append(cols[i], k)
 			}
@@ -162,7 +162,7 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 				selected = len(rounds) - 1
 			}
 		case '\n':
-			return rounds[selected], internal.Continue
+			return rounds[selected], internal.Play
 		}
 	}
 }
