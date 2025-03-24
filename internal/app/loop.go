@@ -6,7 +6,7 @@ import (
 	"github.com/mec-nyan/termy"
 
 	"github.com/mec-nyan/kana-master/internal"
-	"github.com/mec-nyan/kana-master/internal/options"
+	"github.com/mec-nyan/kana-master/internal/settings"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/play"
 	"github.com/mec-nyan/kana-master/internal/rounds"
@@ -20,9 +20,10 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	defer endMain(screen, opts)
 
 	var round kana.KanaRow
-	var quit bool
 	var err error
-	var userOptions internal.UserOptions
+	userOptions := internal.UserOptions{
+		Animate: opts.Animate,
+	}
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
@@ -40,11 +41,8 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 				round = kana.Rows[0]
 			}
 			action, err = play.Fight(screen, round, userOptions)
-			if quit {
-				return nil
-			}
 		} else if action == internal.Settings {
-			userOptions, action = options.SetOptions(screen)
+			userOptions, action = settings.SetOptions(screen)
 			if action == internal.Back {
 				action = internal.Welcome
 			}
