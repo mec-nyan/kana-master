@@ -25,6 +25,7 @@ const (
 	Play
 	Settings
 	Back
+	Select
 	SelectSyllabary
 	SelectGroup
 	SelectRound

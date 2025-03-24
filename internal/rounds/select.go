@@ -19,6 +19,35 @@ type MenuScreen struct {
 	margin int
 }
 
+func Selection(screen *termy.Termy, opts internal.UserOptions) (
+	kana.KanaRow, internal.Action,
+) {
+	// First we select what we want to practise.
+	action := internal.SelectSyllabary
+	var mode RoundMode
+	var round kana.KanaRow
+	for {
+		 if action == internal.SelectSyllabary {
+			mode.Syllabary, action = SelectSyllabary(screen, opts)
+			if action == internal.Back {
+				return kana.KanaRow{}, internal.Welcome
+			}
+		} else if action == internal.SelectGroup {
+			mode.Group, action = SelectGroup(screen, opts)
+			if action == internal.Back {
+				action = internal.SelectSyllabary
+			}
+		}else if action == internal.SelectRound {
+			round, action = SelectRound(screen, mode, opts)
+			if action == internal.Back {
+				action = internal.SelectGroup
+				continue
+			}
+			return round, action
+		}
+	}
+}
+
 // SelectRound presents a screen with information about completed
 // rounds, score, overall, and lets the user select where to go
 // from here.
