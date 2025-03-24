@@ -2,17 +2,16 @@ package internal
 
 type (
 	CLIOptions struct {
-		Animate           bool
-		ShowWelcomeScreen bool
-		ShowOptionsScreen bool
+		Animate bool
+		// ShowWelcomeScreen bool
+		// ShowOptionsScreen bool
 	}
 
 	UserOptions struct {
-		AnimationOn      bool
-		UsePalette       bool
+		Animate          bool
+		CustomPalette    bool
 		PractisePairs    bool
 		PractiseHiragana bool
 		PractiseKatakana bool
-		BackToMain       bool
 	}
 )

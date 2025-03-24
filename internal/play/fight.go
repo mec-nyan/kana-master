@@ -49,7 +49,7 @@ func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (in
 func intro(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
 	write := typewriter.Write
 	delay := 0 * time.Millisecond
-	if opts.AnimationOn {
+	if opts.Animate {
 		delay = 500 * time.Millisecond
 		write = typewriter.Type
 	}
@@ -97,7 +97,7 @@ func intro(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
 // Keep going until the goal (i.e. five correct answers for each kana) is reached.
 func play(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (float64, float64) {
 	write := typewriter.Write
-	if opts.AnimationOn {
+	if opts.Animate {
 		write = typewriter.Type
 	}
 	// We'll use rand to shuffle the rows each time.
@@ -226,7 +226,7 @@ Loop:
 
 func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) (internal.Action, error) {
 	write := typewriter.Write
-	if opts.AnimationOn {
+	if opts.Animate {
 		write = typewriter.Type
 	}
 	screen.ClearScreen()
