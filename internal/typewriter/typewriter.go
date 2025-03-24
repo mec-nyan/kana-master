@@ -1,9 +1,12 @@
 package typewriter
 
 import (
+	"fmt"
 	"os"
+	"strings"
 	"time"
-	"unicode/utf8"
+
+	"github.com/mec-nyan/kana-master/pkg/kana"
 )
 
 func Write(str string) {
@@ -18,25 +21,40 @@ func Type(str string) {
 }
 
 func WriteCentered(str string, size int) {
-	Write(padStr(str, size))
+	output, _ := PadStr(str, size)
+	Write(output)
 }
 
 func TypeCentered(str string, size int) {
-	Type(padStr(str, size))
+	output, _ := PadStr(str, size)
+	Type(output)
 }
 
-func padStr(str string, size int) string {
+func PadStr(str string, size int) (string, error) {
 	var padding int
 	var paddedStr string
 	// TODO: Count COLUMNS and not characters!
-	if utf8.RuneCountInString(str) > size {
-		str = str[:size]
+	cols := kana.CountCols(str)
+	if cols > size {
+		return "", fmt.Errorf("err: str \"%s\" occupies more than %d cols", str, size)
 	} else {
-		padding = (size - utf8.RuneCountInString(str)) / 2
+		padding = (size - cols) / 2
 	}
 
 	for i := 0; i < padding; i++ {
 		paddedStr += " "
 	}
-	return string(paddedStr) + str
+	return string(paddedStr) + str, nil
+}
+
+func CenterStr(str string, width int) (string, error) {
+	cols := kana.CountCols(str)
+	if cols > width {
+		return "", fmt.Errorf("err: str \"%s\" occupies more than %d cols", str, width)
+	}
+	padding := width - len(str)
+	leftPad := padding / 2
+	rightPad := padding - leftPad
+
+	return strings.Repeat(" ", leftPad) + str + strings.Repeat(" ", rightPad), nil
 }

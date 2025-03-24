@@ -28,7 +28,7 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 
 	for {
 		if action == internal.Welcome {
-			action, err = welcome.Welcome(screen, opts.Animate)
+			action, err = welcome.Welcome(screen, opts)
 			if err != nil {
 				return err
 			}
@@ -40,9 +40,6 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 			action, err = play.Fight(screen, round, opts)
 		} else if action == internal.Settings {
 			opts, action = settings.SetOptions(screen)
-			if action == internal.Back {
-				action = internal.Welcome
-			}
 		} else if action == internal.Select {
 			round, action = rounds.Selection(screen, opts)
 		} else if action == internal.Continue {
@@ -51,6 +48,10 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 			// "Katakana", from "rows" to "columns", etc).
 			round = rounds.NextRow(round)
 			action = internal.Play
+		} else if action == internal.Help {
+			return nil
+		} else if action == internal.Progress {
+			return nil
 		} else if action == internal.Quit {
 			return nil
 		}
