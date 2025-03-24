@@ -15,35 +15,8 @@ import (
 // Can we do this generic for Actions and Modes?
 type MenuScreen struct {
 	title  string
-	menu   internal.ModeMenu
+	menu   internal.RoundModeMenu
 	margin int
-}
-
-type RoundMode struct {
-	Syllabary, Group internal.Mode
-}
-
-func getRounds(mode internal.Mode) []kana.KanaRow {
-	var rounds []kana.KanaRow
-	switch mode {
-	case internal.RowMode:
-		for _, row := range kana.Rows {
-			rounds = append(rounds, row)
-		}
-	case internal.ColMode:
-		cols := [5]kana.KanaRow{}
-		for _, row := range kana.Rows {
-			for i, k := range row {
-				cols[i] = append(cols[i], k)
-			}
-		}
-		for _, col := range cols {
-			rounds = append(rounds, col)
-		}
-		// TODO: How to separate regular from dakuten.
-		// No need to return anything for "all".
-	}
-	return rounds
 }
 
 // SelectRound presents a screen with information about completed
@@ -167,76 +140,76 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 	}
 }
 
-func SelectSyllabary(screen *termy.Termy, _ internal.UserOptions) (internal.Mode, internal.Action) {
+func SelectSyllabary(screen *termy.Termy, _ internal.UserOptions) (internal.RoundMode, internal.Action) {
 
 	syllabary := selectionScreen(screen, MenuScreen{
 		title: "Select mode",
 		// TODO: How do we include/exclude dakuten/handakuten?
-		menu: internal.ModeMenu{
+		menu: internal.RoundModeMenu{
 			{
 				Name:        "Hiragana",
-				Mode:        internal.HiraganaMode,
+				RoundMode:   internal.HiraganaMode,
 				Description: "Practise Hiragana",
 			},
 			{
 				Name:        "Katakana",
-				Mode:        internal.KatakanaMode,
+				RoundMode:   internal.KatakanaMode,
 				Description: "Practise Katakana",
 			},
 			{
 				Name:        "Pairs",
-				Mode:        internal.PairsMode,
+				RoundMode:   internal.PairsMode,
 				Description: "Practise with pairs of Hiragana and Katakana",
 			},
 		},
 		margin: 6,
 	})
 
-	if syllabary == internal.NoMode {
-		return internal.NoMode, internal.Back
+	if syllabary == 0 {
+		return 0, internal.Back
 	}
 
 	return syllabary, internal.SelectGroup
 }
 
-func SelectGroup(screen *termy.Termy, _ internal.UserOptions) (internal.Mode, internal.Action) {
+func SelectGroup(screen *termy.Termy, _ internal.UserOptions) (internal.RoundMode, internal.Action) {
 
 	group := selectionScreen(screen, MenuScreen{
 		title: "Select mode",
 		// TODO: How do we include/exclude dakuten/handakuten?
-		menu: internal.ModeMenu{
+		menu: internal.RoundModeMenu{
 			{
 				Name:        "Rows",
-				Mode:        internal.RowMode,
+				RoundMode:   internal.RowMode,
 				Description: "五十音 (gojûon) rows",
 			},
 			{
 				Name:        "Columns",
-				Mode:        internal.ColMode,
+				RoundMode:   internal.ColMode,
 				Description: "五十音 (gojûon) columns",
 			},
 			{
 				Name:        "Groups",
-				Mode:        internal.GroupMode,
+				RoundMode:   internal.GroupMode,
 				Description: "五十音 (gojûon),　濁点 (dakuten) & 半濁点 (handakuten)",
 			},
 			{
 				Name:        "All",
-				Mode:        internal.AllMode,
+				RoundMode:   internal.AllMode,
 				Description: "All 五十音 (gojûon)",
 			},
 		},
 		margin: 6,
 	})
 
-	if group == internal.NoMode {
-		return internal.NoMode, internal.Back
+	if group == 0 {
+		return 0, internal.Back
 	}
 
 	return group, internal.SelectRound
 }
 
-func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.Mode {
+func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
 	screen.ClearScreen()
 	screen.UseDefault()
 	screen.HideCur()
@@ -281,9 +254,9 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.Mode {
 		res, _ := input.GetChar()
 		switch res {
 		case 'q':
-			return internal.NoMode
+			return 0
 		case '\x1b':
-			return internal.NoMode
+			return 0
 		case 'j', 'n':
 			selected++
 			if selected == len(menu.menu) {
@@ -295,7 +268,7 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.Mode {
 				selected = len(menu.menu) - 1
 			}
 		case '\n':
-			return menu.menu[selected].Mode
+			return menu.menu[selected].RoundMode
 		}
 	}
 }

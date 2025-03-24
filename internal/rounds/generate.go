@@ -1,6 +1,9 @@
 package rounds
 
-import "github.com/mec-nyan/kana-master/pkg/kana"
+import (
+	"github.com/mec-nyan/kana-master/internal"
+	"github.com/mec-nyan/kana-master/pkg/kana"
+)
 
 type Kind uint
 
@@ -51,4 +54,32 @@ func NextRow(row kana.KanaRow) kana.KanaRow {
 		rowIdx = 0
 	}
 	return kana.Rows[rowIdx]
+}
+
+type RoundMode struct {
+	Syllabary internal.SyllabaryMode
+	Group     internal.RoundMode
+}
+
+func getRounds(mode internal.RoundMode) []kana.KanaRow {
+	var rounds []kana.KanaRow
+	switch mode {
+	case internal.RowMode:
+		for _, row := range kana.Rows {
+			rounds = append(rounds, row)
+		}
+	case internal.ColMode:
+		cols := [5]kana.KanaRow{}
+		for _, row := range kana.Rows {
+			for i, k := range row {
+				cols[i] = append(cols[i], k)
+			}
+		}
+		for _, col := range cols {
+			rounds = append(rounds, col)
+		}
+		// TODO: How to separate regular from dakuten.
+		// No need to return anything for "all".
+	}
+	return rounds
 }
