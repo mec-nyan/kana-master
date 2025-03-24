@@ -16,14 +16,11 @@ import (
 	"github.com/mec-nyan/kana-master/pkg/kana"
 )
 
-func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
+func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 	defer endMain(screen, opts)
 
 	var round kana.KanaRow
 	var err error
-	userOptions := internal.UserOptions{
-		Animate: opts.Animate,
-	}
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
@@ -40,14 +37,14 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 			if round == nil {
 				round = kana.Rows[0]
 			}
-			action, err = play.Fight(screen, round, userOptions)
+			action, err = play.Fight(screen, round, opts)
 		} else if action == internal.Settings {
-			userOptions, action = settings.SetOptions(screen)
+			opts, action = settings.SetOptions(screen)
 			if action == internal.Back {
 				action = internal.Welcome
 			}
 		} else if action == internal.Select {
-			round, action = rounds.Selection(screen, userOptions)
+			round, action = rounds.Selection(screen, opts)
 		} else if action == internal.Continue {
 			// TODO: When we reach the end, present an ending screen.
 			// Maybe continue to next stage (i.e. from "Hiragana" to
@@ -60,7 +57,7 @@ func MainLoop(screen *termy.Termy, opts internal.CLIOptions) error {
 	}
 }
 
-func endMain(screen *termy.Termy, opts internal.CLIOptions) {
+func endMain(screen *termy.Termy, opts internal.UserOptions) {
 	// TODO: Add some cool ASCII art to the end screen 💖
 	writeFunc := typewriter.Write
 	if opts.Animate {

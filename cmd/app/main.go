@@ -8,13 +8,23 @@ import (
 	"github.com/mec-nyan/kana-master/internal/app"
 )
 
-var animate = flag.String("animation", "on", "enable/disable animations on welcome screen.")
+var noAnim, palette bool
+
+func init() {
+	flag.BoolVar(&noAnim, "no-anim", false, "Disable animations.")
+	flag.BoolVar(&noAnim, "na", false, "Disable animations (shorthand).")
+	// TODO: The logic to switch between the terminal theme and a custom palette.
+	flag.BoolVar(&palette, "palette", false, "Use custom palette.")
+	flag.BoolVar(&palette, "p", false, "Use custom palette (shorthand).")
+}
 
 func main() {
+
 	flag.Parse()
 
-	opts := internal.CLIOptions{
-		Animate: *animate == "on",
+	opts := internal.UserOptions{
+		Animate:       !noAnim,
+		CustomPalette: palette,
 	}
 
 	err := app.Run(opts)
