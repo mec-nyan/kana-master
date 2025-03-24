@@ -15,7 +15,7 @@ import (
 // Can we do this generic for Actions and Modes?
 type MenuScreen struct {
 	title  string
-	menu   internal.RoundModeMenu
+	menu   internal.Menu
 	margin int
 }
 
@@ -27,7 +27,7 @@ func Selection(screen *termy.Termy, opts internal.UserOptions) (
 	var mode RoundMode
 	var round kana.KanaRow
 	for {
-		 if action == internal.SelectSyllabary {
+		if action == internal.SelectSyllabary {
 			mode.Syllabary, action = SelectSyllabary(screen, opts)
 			if action == internal.Back {
 				return kana.KanaRow{}, internal.Welcome
@@ -37,7 +37,7 @@ func Selection(screen *termy.Termy, opts internal.UserOptions) (
 			if action == internal.Back {
 				action = internal.SelectSyllabary
 			}
-		}else if action == internal.SelectRound {
+		} else if action == internal.SelectRound {
 			round, action = SelectRound(screen, mode, opts)
 			if action == internal.Back {
 				action = internal.SelectGroup
@@ -174,20 +174,20 @@ func SelectSyllabary(screen *termy.Termy, _ internal.UserOptions) (internal.Roun
 	syllabary := selectionScreen(screen, MenuScreen{
 		title: "Select mode",
 		// TODO: How do we include/exclude dakuten/handakuten?
-		menu: internal.RoundModeMenu{
+		menu: internal.Menu{
 			{
 				Name:        "Hiragana",
-				RoundMode:   internal.HiraganaMode,
+				Value:       internal.HiraganaMode,
 				Description: "Practise Hiragana",
 			},
 			{
 				Name:        "Katakana",
-				RoundMode:   internal.KatakanaMode,
+				Value:       internal.KatakanaMode,
 				Description: "Practise Katakana",
 			},
 			{
 				Name:        "Pairs",
-				RoundMode:   internal.PairsMode,
+				Value:       internal.PairsMode,
 				Description: "Practise with pairs of Hiragana and Katakana",
 			},
 		},
@@ -206,25 +206,25 @@ func SelectGroup(screen *termy.Termy, _ internal.UserOptions) (internal.RoundMod
 	group := selectionScreen(screen, MenuScreen{
 		title: "Select mode",
 		// TODO: How do we include/exclude dakuten/handakuten?
-		menu: internal.RoundModeMenu{
+		menu: internal.Menu{
 			{
 				Name:        "Rows",
-				RoundMode:   internal.RowMode,
+				Value:       internal.RowMode,
 				Description: "五十音 (gojûon) rows",
 			},
 			{
 				Name:        "Columns",
-				RoundMode:   internal.ColMode,
+				Value:       internal.ColMode,
 				Description: "五十音 (gojûon) columns",
 			},
 			{
 				Name:        "Groups",
-				RoundMode:   internal.GroupMode,
+				Value:       internal.GroupMode,
 				Description: "五十音 (gojûon),　濁点 (dakuten) & 半濁点 (handakuten)",
 			},
 			{
 				Name:        "All",
-				RoundMode:   internal.AllMode,
+				Value:       internal.AllMode,
 				Description: "All 五十音 (gojûon)",
 			},
 		},
@@ -297,7 +297,7 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
 				selected = len(menu.menu) - 1
 			}
 		case '\n':
-			return menu.menu[selected].RoundMode
+			return menu.menu[selected].Value
 		}
 	}
 }

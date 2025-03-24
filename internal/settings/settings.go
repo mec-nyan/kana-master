@@ -119,7 +119,7 @@ Loop:
 		case 'q':
 			return internal.UserOptions{}, internal.Quit
 		case '\x1b':
-			return internal.UserOptions{}, internal.Back
+			return internal.UserOptions{}, internal.Welcome
 		case 'j', 'n':
 			current++
 			if current == len(opts) {
@@ -145,7 +145,7 @@ Loop:
 				return internal.UserOptions{}, internal.Quit
 			}
 			if strings.Contains(name, "back") {
-				return internal.UserOptions{}, internal.Back
+				return internal.UserOptions{}, internal.Welcome
 			}
 			break Loop
 		}

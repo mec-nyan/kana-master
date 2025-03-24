@@ -8,16 +8,44 @@ type (
 )
 
 type (
-	Action = uint
+	Action        = uint
+	SyllabaryMode = uint
+	RoundMode     = uint
 
-	ActionItem struct {
-		Name
-		Action
-		Description
+	Item struct {
+		Name        string
+		Value       uint
+		Description string
 	}
 
-	ActionMenu []ActionItem
+	Menu []Item
 )
+
+// Get the maximum number of columns an item.Name will occupy.
+// Useful to center menu elements.
+func (m Menu) MaxNameLen() int {
+	mnl := 0
+	for _, item := range m {
+		cols := kana.CountCols(item.Name)
+		if cols > mnl {
+			mnl = cols
+		}
+	}
+	return mnl
+}
+
+// Get the maximum number of columns an item.Description will occupy.
+// Useful to center menu descriptions.
+func (m Menu) MaxDescLen() int {
+	mdl := 0
+	for _, item := range m {
+		cols := kana.CountCols(item.Description)
+		if cols > mdl {
+			mdl = cols
+		}
+	}
+	return mdl
+}
 
 const (
 	NoOp Action = iota
@@ -30,19 +58,9 @@ const (
 	SelectGroup
 	SelectRound
 	Continue
+	Progress
+	Help
 	Quit
-)
-
-type (
-	SyllabaryMode = uint
-
-	SyllabaryItem struct {
-		Name
-		SyllabaryMode
-		Description
-	}
-
-	SyllabaryModeMenu []ModeItem
 )
 
 const (
@@ -50,18 +68,6 @@ const (
 	HiraganaMode
 	KatakanaMode
 	PairsMode
-)
-
-type (
-	RoundMode = uint
-
-	ModeItem struct {
-		Name
-		RoundMode
-		Description
-	}
-
-	RoundModeMenu []ModeItem
 )
 
 const (
