@@ -6,6 +6,7 @@ import (
 	"github.com/mec-nyan/termy"
 
 	"github.com/mec-nyan/kana-master/internal"
+	"github.com/mec-nyan/kana-master/internal/help"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/play"
 	"github.com/mec-nyan/kana-master/internal/rounds"
@@ -49,7 +50,7 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 			round = rounds.NextRow(round)
 			action = internal.Play
 		} else if action == internal.Help {
-			return nil
+			action = help.Help(screen)
 		} else if action == internal.Progress {
 			return nil
 		} else if action == internal.Quit {
