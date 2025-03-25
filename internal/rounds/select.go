@@ -85,78 +85,112 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 			screen.MoveTo(1, yPos)
 			yPos += 2
 
-			if mode.Syllabary == internal.HiraganaMode {
-				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
-					typewriter.WriteCentered(
-						fmt.Sprintf("\"%c\"  %c    %c    %c",
-							round[0].Romaji[0],
-							round[0].Hiragana,
-							round[2].Hiragana,
-							round[4].Hiragana,
-						),
-						cols,
-					)
-				} else {
-					typewriter.WriteCentered(
-						fmt.Sprintf("\"%c\"  %c %c %c %c %c",
-							strings.ToUpper(string(round[0].Romaji))[0],
-							round[0].Hiragana,
-							round[1].Hiragana,
-							round[2].Hiragana,
-							round[3].Hiragana,
-							round[4].Hiragana,
-						),
-						cols,
-					)
+			if mode.Group == internal.RowMode {
+				if mode.Syllabary == internal.HiraganaMode {
+					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
+						typewriter.WriteCentered(
+							fmt.Sprintf("\"%c\"  %c    %c    %c",
+								round[0].Romaji[0],
+								round[0].Hiragana,
+								round[2].Hiragana,
+								round[4].Hiragana,
+							),
+							cols,
+						)
+					} else {
+						typewriter.WriteCentered(
+							fmt.Sprintf("\"%c\"  %c %c %c %c %c",
+								strings.ToUpper(string(round[0].Romaji))[0],
+								round[0].Hiragana,
+								round[1].Hiragana,
+								round[2].Hiragana,
+								round[3].Hiragana,
+								round[4].Hiragana,
+							),
+							cols,
+						)
+					}
+				} else if mode.Syllabary == internal.KatakanaMode {
+					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
+						typewriter.WriteCentered(
+							fmt.Sprintf("\"%c\"  %c    %c    %c",
+								strings.ToUpper(string(round[0].Romaji))[0],
+								round[0].Katakana,
+								round[2].Katakana,
+								round[4].Katakana,
+							),
+							cols,
+						)
+					} else {
+						typewriter.WriteCentered(
+							fmt.Sprintf("\"%c\"  %c %c %c %c %c",
+								strings.ToUpper(string(round[0].Romaji))[0],
+								round[0].Katakana,
+								round[1].Katakana,
+								round[2].Katakana,
+								round[3].Katakana,
+								round[4].Katakana,
+							),
+							cols,
+						)
+					}
+				} else if mode.Syllabary == internal.PairsMode {
+					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
+						typewriter.WriteCentered(
+							fmt.Sprintf("\"%c\"  (%c, %c)            (%c, %c)            (%c, %c)",
+								strings.ToUpper(string(round[0].Romaji))[0],
+								round[0].Hiragana, round[0].Katakana,
+								round[2].Hiragana, round[2].Katakana,
+								round[4].Hiragana, round[4].Katakana,
+							),
+							cols,
+						)
+					} else {
+						typewriter.WriteCentered(
+							fmt.Sprintf("\"%c\"  (%c  %c)  (%c  %c)  (%c  %c)  (%c  %c)  (%c  %c)",
+								strings.ToUpper(string(round[0].Romaji))[0],
+								round[0].Hiragana, round[0].Katakana,
+								round[1].Hiragana, round[1].Katakana,
+								round[2].Hiragana, round[2].Katakana,
+								round[3].Hiragana, round[3].Katakana,
+								round[4].Hiragana, round[4].Katakana,
+							),
+							cols,
+						)
+					}
 				}
-			} else if mode.Syllabary == internal.KatakanaMode {
-				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
-					typewriter.WriteCentered(
-						fmt.Sprintf("\"%c\"  %c    %c    %c",
-							strings.ToUpper(string(round[0].Romaji))[0],
-							round[0].Katakana,
-							round[2].Katakana,
-							round[4].Katakana,
-						),
-						cols,
-					)
-				} else {
-					typewriter.WriteCentered(
-						fmt.Sprintf("\"%c\"  %c %c %c %c %c",
-							strings.ToUpper(string(round[0].Romaji))[0],
-							round[0].Katakana,
-							round[1].Katakana,
-							round[2].Katakana,
-							round[3].Katakana,
-							round[4].Katakana,
-						),
-						cols,
-					)
+			} else if mode.Group == internal.ColMode {
+				line := strings.ToUpper(string(round[0].Romaji)) + ": "
+				if mode.Syllabary == internal.HiraganaMode {
+					for _, n := range round {
+						c := n.Hiragana
+						if c == 0 {
+							line += "    "
+						} else {
+							line += fmt.Sprintf(" %c", c)
+						}
+					}
+				} else if mode.Syllabary == internal.KatakanaMode {
+					for _, n := range round {
+						c := n.Katakana
+						if c == 0 {
+							line += "   "
+						} else {
+							line += fmt.Sprintf(" %c", c)
+						}
+					}
+				} else if mode.Syllabary == internal.PairsMode {
+					for _, n := range round {
+						h := n.Hiragana
+						k := n.Hiragana
+						if h == 0 {
+							line += "      "
+						} else {
+							line += fmt.Sprintf(" %c %c,", h, k)
+						}
+					}
 				}
-			} else if mode.Syllabary == internal.PairsMode {
-				if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
-					typewriter.WriteCentered(
-						fmt.Sprintf("\"%c\"  (%c, %c)            (%c, %c)            (%c, %c)",
-							strings.ToUpper(string(round[0].Romaji))[0],
-							round[0].Hiragana, round[0].Katakana,
-							round[2].Hiragana, round[2].Katakana,
-							round[4].Hiragana, round[4].Katakana,
-						),
-						cols,
-					)
-				} else {
-					typewriter.WriteCentered(
-						fmt.Sprintf("\"%c\"  (%c  %c)  (%c  %c)  (%c  %c)  (%c  %c)  (%c  %c)",
-							strings.ToUpper(string(round[0].Romaji))[0],
-							round[0].Hiragana, round[0].Katakana,
-							round[1].Hiragana, round[1].Katakana,
-							round[2].Hiragana, round[2].Katakana,
-							round[3].Hiragana, round[3].Katakana,
-							round[4].Hiragana, round[4].Katakana,
-						),
-						cols,
-					)
-				}
+				typewriter.WriteCentered(line, cols)
 			}
 		}
 
