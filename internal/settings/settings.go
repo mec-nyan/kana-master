@@ -7,7 +7,6 @@ import (
 
 	"github.com/mec-nyan/kana-master/internal"
 	"github.com/mec-nyan/kana-master/internal/input"
-	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
 	"github.com/mec-nyan/termy"
 )
@@ -56,18 +55,13 @@ func SetOptions(screen *termy.Termy) (internal.UserOptions, internal.Action) {
 		},
 	}
 
-	screen.Bold()
-	screen.Send()
-
 	var padding int = (cols - len(title)) / 2
 	screen.MoveTo(padding, 4)
-	screen.SetFgHex(palette.Blue)
+	screen.SetFg(4)
 	screen.Send()
 	typewriter.Write(title)
 
 	screen.Normal()
-	screen.SetFgHex(palette.Grey)
-	screen.Send()
 
 	var y int = rows / 3
 
@@ -90,7 +84,7 @@ Loop:
 			if current == i {
 				screen.SetFg(2)
 			} else {
-				screen.SetFg(4)
+				screen.SetFg(5)
 			}
 			screen.Send()
 
@@ -109,7 +103,7 @@ Loop:
 		}
 
 		screen.MoveTo((cols-len(exitMsg))/2, rows-8)
-		screen.SetFg(8)
+		screen.SetFg(4)
 		screen.Send()
 		os.Stdout.WriteString(exitMsg)
 

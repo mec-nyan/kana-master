@@ -47,6 +47,7 @@ func Welcome(screen *termy.Termy, opts internal.UserOptions) (internal.Action, e
 	// We shouldn't take for granted that the previous screen cleaned everything up
 	// successfully.
 	screen.ClearScreen()
+	// TODO: Handle colours (default terminal theme, custom palette, etc)
 	screen.SetFgHex(palette.Grey)
 	screen.Send()
 
@@ -117,9 +118,9 @@ func putMenu(screen *termy.Termy, menu internal.Menu, yPos, cols, sel int) {
 	// Paint the selection menu.
 	for i, item := range menu {
 		if i == sel {
-			screen.SetFgHex(palette.Green)
+			screen.SetFg(2)
 		} else {
-			screen.SetFgHex(palette.Blue)
+			screen.SetFg(4)
 		}
 		screen.Send()
 		screen.MoveTo(1, yPos+incr)

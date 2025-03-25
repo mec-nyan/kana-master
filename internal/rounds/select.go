@@ -65,13 +65,13 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 	screen.SetFg(4)
 	screen.Send()
 
-	putCenteredAt(screen, "Round Selection", 2, writeFunc)
+	putCenteredAt(screen, "Round Selection", 4, writeFunc)
 
 	rows, cols, _ := screen.Size()
 
 	rounds := getRounds(mode.Group)
 
-	yPos := 6
+	yPos := (rows - len(rounds)*2) / 2
 	selected := 0
 	for {
 		yPos := yPos
@@ -160,12 +160,12 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 					}
 				}
 			} else if mode.Group == internal.ColMode {
-				line := strings.ToUpper(string(round[0].Romaji)) + ": "
+				line := "\"" + strings.ToUpper(string(round[0].Romaji)) + "\""
 				if mode.Syllabary == internal.HiraganaMode {
 					for _, n := range round {
 						c := n.Hiragana
 						if c == 0 {
-							line += "    "
+							line += "   "
 						} else {
 							line += fmt.Sprintf(" %c", c)
 						}
@@ -194,8 +194,9 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 			}
 		}
 
-		screen.MoveTo(1, rows-2)
-		screen.SetFg(5)
+		// TODO: Check for terminal size!
+		screen.MoveTo(1, rows-4)
+		screen.SetFg(4)
 		screen.Send()
 		typewriter.WriteCentered("Press Escape to go back", cols)
 
@@ -301,7 +302,7 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
 	nameWidth := menu.menu.MaxNameLen()
 
 	yPos := menu.margin
-	screen.SetFg(6)
+	screen.SetFg(4)
 	screen.Send()
 	screen.MoveTo(1, yPos)
 	typewriter.WriteCentered(menu.title, cols)
@@ -328,7 +329,7 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
 			yPos += menuSep
 		}
 
-		screen.SetFg(6)
+		screen.SetFg(4)
 		screen.Send()
 		screen.MoveTo(1, rows-menu.margin)
 		screen.ClearToEOL()
