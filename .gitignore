@@ -1,2 +1,3 @@
 # Don't include coverage files for now.
 *.out
+.mypy_cache/
