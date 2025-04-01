@@ -38,51 +38,51 @@ var (
 	}
 )
 
-func Fight(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (internal.Action, error) {
-	intro(screen, row, opts)
+func Fight(display *termy.Display, row kana.KanaRow, opts internal.UserOptions) (internal.Action, error) {
+	intro(display, row, opts)
 
-	tries, score := play(screen, row, opts)
+	tries, score := play(display, row, opts)
 
-	return end(screen, tries, score, opts)
+	return end(display, tries, score, opts)
 }
 
-func intro(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
+func intro(display *termy.Display, row kana.KanaRow, opts internal.UserOptions) {
 	write := typewriter.Write
 	delay := 0 * time.Millisecond
 	if opts.Animate {
 		delay = 500 * time.Millisecond
 		write = typewriter.Type
 	}
-	screen.ClearScreen()
-	screen.Normal()
-	screen.Send()
+	display.ClearScreen()
+	display.Normal()
+	display.Send()
 
-	screen.SetFgHex(palette.Blue)
-	screen.Send()
+	display.SetFgHex(palette.Blue)
+	display.Send()
 
 	x, y := 4, 2
-	screen.MoveTo(x, y)
+	display.MoveTo(x, y)
 	write("Let's start with these pairs")
 	time.Sleep(delay)
 	y += 2
-	screen.MoveTo(x, y)
+	display.MoveTo(x, y)
 	write("romaji: (hiragana, katakana)")
 	time.Sleep(delay)
 
-	screen.SetFg(colours.White)
-	screen.Send()
+	display.SetFg(colours.White)
+	display.Send()
 	for _, v := range row {
 		y += 2
-		screen.MoveTo(x, y)
+		display.MoveTo(x, y)
 		write(string(v.Romaji) + ": (" + string(v.Hiragana) + ", " + string(v.Katakana) + ")")
 		time.Sleep(delay)
 	}
 
-	screen.SetFgHex(palette.Blue)
-	screen.Send()
+	display.SetFgHex(palette.Blue)
+	display.Send()
 
 	y += 4
-	screen.MoveTo(x, y)
+	display.MoveTo(x, y)
 	write("Press any key to start!")
 
 	input.GetChar()
@@ -95,7 +95,7 @@ func intro(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) {
 // Shuffle again makeing sure we don't start with the same kana
 // we ended the las row,
 // Keep going until the goal (i.e. five correct answers for each kana) is reached.
-func play(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (float64, float64) {
+func play(display *termy.Display, row kana.KanaRow, opts internal.UserOptions) (float64, float64) {
 	write := typewriter.Write
 	if opts.Animate {
 		write = typewriter.Type
@@ -116,19 +116,19 @@ func play(screen *termy.Termy, row kana.KanaRow, opts internal.UserOptions) (flo
 	progress := map[kana.Romaji]int{}
 
 	// We'll redraw this every frame.
-	screen.ClearScreen()
-	screen.SetFg(colours.Blue)
-	screen.Send()
+	display.ClearScreen()
+	display.SetFg(colours.Blue)
+	display.Send()
 
 	x, y := 4, 2
-	screen.MoveTo(x, y)
+	display.MoveTo(x, y)
 	write("Write in romaji:")
-	screen.SetFgHex(palette.Grey)
-	screen.Send()
+	display.SetFgHex(palette.Grey)
+	display.Send()
 	y += 1
-	screen.MoveTo(x, y)
+	display.MoveTo(x, y)
 	write("(press \"q\" to end this round)")
-	screen.SaveCurPos()
+	display.SaveCurPos()
 
 Loop:
 	for {
@@ -146,30 +146,30 @@ Loop:
 			y := y
 			x = 8
 
-			screen.RestoreCurPos()
-			screen.ClearToEOS()
+			display.RestoreCurPos()
+			display.ClearToEOS()
 
 			// Show progress bars.
-			screen.MoveTo(x, y+10)
-			screen.ClearToEOL()
-			screen.SetFgHex(palette.Blue)
-			screen.Send()
+			display.MoveTo(x, y+10)
+			display.ClearToEOL()
+			display.SetFgHex(palette.Blue)
+			display.Send()
 
 			fmt.Printf("Progress:")
 			for i, v := range order {
-				screen.SetFg(6 - i)
-				screen.Send()
-				screen.MoveTo(x, y+11+i)
-				screen.ClearToEOL()
+				display.SetFg(6 - i)
+				display.Send()
+				display.MoveTo(x, y+11+i)
+				display.ClearToEOL()
 				fmt.Printf("%s  (%-5s)", v, strings.Repeat("▄", progress[v]))
 			}
 
-			screen.SetFgHex(palette.Green)
-			screen.Send()
+			display.SetFgHex(palette.Green)
+			display.Send()
 
 			// Show the hiragana and katakana kanas.
 			y += 2
-			screen.MoveTo(x, y)
+			display.MoveTo(x, y)
 			write(string(currentKana.Hiragana) + " " + string(currentKana.Katakana) + " => ")
 
 			// TODO: Handle error here.
@@ -188,7 +188,7 @@ Loop:
 			letterAlt := currentKana.Alt
 
 			y += 2
-			screen.MoveTo(x, y)
+			display.MoveTo(x, y)
 
 			switch kana {
 			case "q", "\x1b":
@@ -224,20 +224,20 @@ Loop:
 	return tries, score
 }
 
-func end(screen *termy.Termy, tries, score float64, opts internal.UserOptions) (internal.Action, error) {
+func end(display *termy.Display, tries, score float64, opts internal.UserOptions) (internal.Action, error) {
 	write := typewriter.Write
 	if opts.Animate {
 		write = typewriter.Type
 	}
-	screen.ClearScreen()
-	screen.SetFg(colours.Yellow)
-	screen.Send()
+	display.ClearScreen()
+	display.SetFg(colours.Yellow)
+	display.Send()
 
-	screen.MoveTo(4, 2)
+	display.MoveTo(4, 2)
 	perc := int(100 / tries * score)
 	write("You've scored " + strconv.Itoa(perc) + "%")
 
-	screen.MoveTo(4, 5)
+	display.MoveTo(4, 5)
 	write("Press any key to continue (q quits)")
 
 	res, err := input.GetChar()

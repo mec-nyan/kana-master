@@ -21,12 +21,12 @@ type Option struct {
 
 type OptionsMenu []Option
 
-func SetOptions(screen *termy.Termy) (internal.UserOptions, internal.Action) {
-	screen.ClearScreen()
-	screen.HideCur()
-	defer screen.ShowCur()
+func SetOptions(display *termy.Display) (internal.UserOptions, internal.Action) {
+	display.ClearScreen()
+	display.HideCur()
+	defer display.ShowCur()
 
-	rows, cols, _ := screen.Size()
+	rows, cols, _ := display.Size()
 	title := "Options"
 
 	// TODO: Find a better way!
@@ -56,12 +56,12 @@ func SetOptions(screen *termy.Termy) (internal.UserOptions, internal.Action) {
 	}
 
 	var padding int = (cols - len(title)) / 2
-	screen.MoveTo(padding, 4)
-	screen.SetFg(4)
-	screen.Send()
+	display.MoveTo(padding, 4)
+	display.SetFg(4)
+	display.Send()
 	typewriter.Write(title)
 
-	screen.Normal()
+	display.Normal()
 
 	var y int = rows / 3
 
@@ -82,29 +82,29 @@ Loop:
 			}
 
 			if current == i {
-				screen.SetFg(2)
+				display.SetFg(2)
 			} else {
-				screen.SetFg(5)
+				display.SetFg(5)
 			}
-			screen.Send()
+			display.Send()
 
 			padding = (cols - (len(text) + len(toggle))) / 2
-			screen.MoveTo(padding, y)
+			display.MoveTo(padding, y)
 			typewriter.Write(text)
 			// Quit and Back don't toggle.
 			if opt.Kind == "bool" && !opt.On {
-				screen.SetFg(8)
+				display.SetFg(8)
 			} else if opt.Kind == "mult" && current == i {
-				screen.SetFg(3)
+				display.SetFg(3)
 			}
-			screen.Send()
+			display.Send()
 			typewriter.Write(toggle)
 			y += 3
 		}
 
-		screen.MoveTo((cols-len(exitMsg))/2, rows-8)
-		screen.SetFg(4)
-		screen.Send()
+		display.MoveTo((cols-len(exitMsg))/2, rows-8)
+		display.SetFg(4)
+		display.Send()
 		os.Stdout.WriteString(exitMsg)
 
 		action, _ := input.GetChar()

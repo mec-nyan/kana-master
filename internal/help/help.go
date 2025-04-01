@@ -18,28 +18,28 @@ const (
 	ShowAbout
 )
 
-func Help(screen *termy.Termy) internal.Action {
+func Help(display *termy.Display) internal.Action {
 	for {
-		action := Select(screen)
+		action := Select(display)
 		switch action {
 		case internal.Back:
 			return internal.Welcome
 		case ShowKeys:
-			action = Keybindings(screen)
+			action = Keybindings(display)
 		case ShowHowTo:
-			action = GameHelp(screen)
+			action = GameHelp(display)
 		case ShowAbout:
-			action = About(screen)
+			action = About(display)
 		default:
 			return internal.Quit
 		}
 	}
 }
 
-func Select(screen *termy.Termy) internal.Action {
-	screen.ClearScreen()
-	screen.HideCur()
-	defer screen.ShowCur()
+func Select(display *termy.Display) internal.Action {
+	display.ClearScreen()
+	display.HideCur()
+	defer display.ShowCur()
 
 	menu := internal.Menu{
 		{
@@ -61,15 +61,15 @@ func Select(screen *termy.Termy) internal.Action {
 	}
 	nameWidth := menu.MaxNameLen()
 
-	rows, cols, _ := screen.Size()
-	screen.SetFg(8)
-	screen.Send()
-	screen.MoveTo(1, rows-2)
+	rows, cols, _ := display.Size()
+	display.SetFg(8)
+	display.Send()
+	display.MoveTo(1, rows-2)
 	typewriter.WriteCentered("Press 'ESC' to go back, 'q' to quit", cols)
 
-	screen.MoveTo(1, 4)
-	screen.SetFg(6)
-	screen.Send()
+	display.MoveTo(1, 4)
+	display.SetFg(6)
+	display.Send()
 	typewriter.WriteCentered("Help", cols)
 
 	yPos := 14
@@ -78,12 +78,12 @@ func Select(screen *termy.Termy) internal.Action {
 		incr := 0
 		for i, item := range menu {
 			if i == selected {
-				screen.SetFg(2)
+				display.SetFg(2)
 			} else {
-				screen.SetFg(4)
+				display.SetFg(4)
 			}
-			screen.Send()
-			screen.MoveTo(1, yPos+incr)
+			display.Send()
+			display.MoveTo(1, yPos+incr)
 			inner, _ := typewriter.CenterStr(item.Name, nameWidth)
 			typewriter.WriteCentered(
 				"[( "+inner+" )]", cols,
@@ -111,28 +111,28 @@ func Select(screen *termy.Termy) internal.Action {
 	}
 }
 
-func Keybindings(screen *termy.Termy) internal.Action {
-	return wip(screen, "Keys")
+func Keybindings(display *termy.Display) internal.Action {
+	return wip(display, "Keys")
 }
 
-func GameHelp(screen *termy.Termy) internal.Action {
-	return wip(screen, "HowTo")
+func GameHelp(display *termy.Display) internal.Action {
+	return wip(display, "HowTo")
 }
 
-func About(screen *termy.Termy) internal.Action {
-	return wip(screen, "About")
+func About(display *termy.Display) internal.Action {
+	return wip(display, "About")
 }
 
-func wip(screen *termy.Termy, msg string) internal.Action {
-	screen.ClearScreen()
-	screen.SetFg(3)
-	screen.Send()
+func wip(display *termy.Display, msg string) internal.Action {
+	display.ClearScreen()
+	display.SetFg(3)
+	display.Send()
 
-	rows, cols, _ := screen.Size()
+	rows, cols, _ := display.Size()
 
-	screen.MoveTo(1, rows/3)
+	display.MoveTo(1, rows/3)
 	typewriter.WriteCentered("[(   WIP: "+msg+"   )]", cols)
-	screen.MoveTo(1, rows/3+4)
+	display.MoveTo(1, rows/3+4)
 	typewriter.WriteCentered("Press any key...", cols)
 
 	input.GetChar()

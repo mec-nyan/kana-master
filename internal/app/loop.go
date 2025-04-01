@@ -17,19 +17,18 @@ import (
 	"github.com/mec-nyan/kana-master/pkg/kana"
 )
 
-func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
-	defer endMain(screen, opts)
+func MainLoop(display *termy.Display, opts internal.UserOptions) error {
+	defer endMain(display, opts)
 
 	var round kana.KanaRow
 	var err error
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
-	// mode := rounds.RoundMode{}
 
 	for {
 		if action == internal.Welcome {
-			action, err = welcome.Welcome(screen, opts)
+			action, err = welcome.Welcome(display, opts)
 			if err != nil {
 				return err
 			}
@@ -38,11 +37,11 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 			if round == nil {
 				round = kana.Rows[0]
 			}
-			action, err = play.Fight(screen, round, opts)
+			action, err = play.Fight(display, round, opts)
 		} else if action == internal.Settings {
-			opts, action = settings.SetOptions(screen)
+			opts, action = settings.SetOptions(display)
 		} else if action == internal.Select {
-			round, action = rounds.Selection(screen, opts)
+			round, action = rounds.Selection(display, opts)
 		} else if action == internal.Continue {
 			// TODO: When we reach the end, present an ending screen.
 			// Maybe continue to next stage (i.e. from "Hiragana" to
@@ -50,7 +49,7 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 			round = rounds.NextRow(round)
 			action = internal.Play
 		} else if action == internal.Help {
-			action = help.Help(screen)
+			action = help.Help(display)
 		} else if action == internal.Progress {
 			return nil
 		} else if action == internal.Quit {
@@ -59,18 +58,18 @@ func MainLoop(screen *termy.Termy, opts internal.UserOptions) error {
 	}
 }
 
-func endMain(screen *termy.Termy, opts internal.UserOptions) {
+func endMain(display *termy.Display, opts internal.UserOptions) {
 	// TODO: Add some cool ASCII art to the end screen 💖
 	writeFunc := typewriter.Write
 	if opts.Animate {
 		writeFunc = typewriter.Type
 	}
 
-	screen.ClearScreen()
-	screen.SetFgHex(palette.Green)
-	screen.Send()
+	display.ClearScreen()
+	display.SetFgHex(palette.Green)
+	display.Send()
 
-	rows, cols, err := screen.Size()
+	rows, cols, err := display.Size()
 	if err != nil {
 		// TODO: How to handle this error?
 		panic(err)
@@ -79,15 +78,15 @@ func endMain(screen *termy.Termy, opts internal.UserOptions) {
 	bye := "Bye!"
 	y := rows / 3
 	x := (cols - len(bye)) / 2
-	screen.MoveTo(x, y)
+	display.MoveTo(x, y)
 
 	writeFunc(bye)
 
 	time.Sleep(time.Second * 1)
-	screen.ClearScreen()
+	display.ClearScreen()
 }
 
-func ClearFromSavedPos(screen *termy.Termy) {
-	screen.RestoreCurPos()
-	screen.ClearToEOS()
+func ClearFromSavedPos(display *termy.Display) {
+	display.RestoreCurPos()
+	display.ClearToEOS()
 }

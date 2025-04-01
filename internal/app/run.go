@@ -9,14 +9,26 @@ import (
 )
 
 func Run(opts internal.UserOptions) error {
-	screen := termy.NewTermy(os.Stdout)
-	err := screen.Cbreaky()
+	display, err := termy.NewDisplay(os.Stdout)
 	if err != nil {
 		return err
 	}
-	defer screen.Restore()
 
-	err = MainLoop(screen, opts)
+	// Disable stdin buffering.
+	err = display.UnCookIt()
+	if err != nil {
+		return err
+	}
+
+	// Don't echo user input.
+	err = display.NoEcho()
+	if err != nil {
+		return err
+	}
+
+	defer display.Restore()
+
+	err = MainLoop(display, opts)
 	if err != nil {
 		return err
 	}

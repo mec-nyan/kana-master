@@ -20,7 +20,7 @@ type MenuScreen struct {
 	margin int
 }
 
-func Selection(screen *termy.Termy, opts internal.UserOptions) (
+func Selection(display *termy.Display, opts internal.UserOptions) (
 	kana.KanaRow, internal.Action,
 ) {
 	// First we select what we want to practise.
@@ -29,17 +29,17 @@ func Selection(screen *termy.Termy, opts internal.UserOptions) (
 	var round kana.KanaRow
 	for {
 		if action == internal.SelectSyllabary {
-			mode.Syllabary, action = SelectSyllabary(screen, opts)
+			mode.Syllabary, action = SelectSyllabary(display, opts)
 			if action == internal.Back {
 				return kana.KanaRow{}, internal.Welcome
 			}
 		} else if action == internal.SelectGroup {
-			mode.Group, action = SelectGroup(screen, opts)
+			mode.Group, action = SelectGroup(display, opts)
 			if action == internal.Back {
 				action = internal.SelectSyllabary
 			}
 		} else if action == internal.SelectRound {
-			round, action = SelectRound(screen, mode, opts)
+			round, action = SelectRound(display, mode, opts)
 			if action == internal.Back {
 				action = internal.SelectGroup
 				continue
@@ -52,7 +52,7 @@ func Selection(screen *termy.Termy, opts internal.UserOptions) (
 // SelectRound presents a screen with information about completed
 // rounds, score, overall, and lets the user select where to go
 // from here.
-func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions) (
+func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptions) (
 	kana.KanaRow, internal.Action,
 ) {
 	writeFunc := typewriter.Write
@@ -60,14 +60,14 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 	// 	writeFunc = typewriter.Type
 	// }
 
-	screen.ClearScreen()
-	screen.UseDefault()
-	screen.SetFg(4)
-	screen.Send()
+	display.ClearScreen()
+	display.UseDefault()
+	display.SetFg(4)
+	display.Send()
 
-	putCenteredAt(screen, "Round Selection", 4, writeFunc)
+	putCenteredAt(display, "Round Selection", 4, writeFunc)
 
-	rows, cols, _ := screen.Size()
+	rows, cols, _ := display.Size()
 
 	rounds := getRounds(mode.Group)
 
@@ -77,12 +77,12 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 		yPos := yPos
 		for i, round := range rounds {
 			if i == selected {
-				screen.SetFg(2)
+				display.SetFg(2)
 			} else {
-				screen.SetFg(5)
+				display.SetFg(5)
 			}
-			screen.Send()
-			screen.MoveTo(1, yPos)
+			display.Send()
+			display.MoveTo(1, yPos)
 			yPos += 2
 
 			if mode.Group == internal.RowMode {
@@ -195,9 +195,9 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 		}
 
 		// TODO: Check for terminal size!
-		screen.MoveTo(1, rows-4)
-		screen.SetFg(4)
-		screen.Send()
+		display.MoveTo(1, rows-4)
+		display.SetFg(4)
+		display.Send()
 		typewriter.WriteCentered("Press Escape to go back", cols)
 
 		res, _ := input.GetChar()
@@ -222,9 +222,9 @@ func SelectRound(screen *termy.Termy, mode RoundMode, opts internal.UserOptions)
 	}
 }
 
-func SelectSyllabary(screen *termy.Termy, _ internal.UserOptions) (internal.RoundMode, internal.Action) {
+func SelectSyllabary(display *termy.Display, _ internal.UserOptions) (internal.RoundMode, internal.Action) {
 
-	syllabary := selectionScreen(screen, MenuScreen{
+	syllabary := selectionScreen(display, MenuScreen{
 		title: "Select mode",
 		// TODO: How do we include/exclude dakuten/handakuten?
 		menu: internal.Menu{
@@ -254,9 +254,9 @@ func SelectSyllabary(screen *termy.Termy, _ internal.UserOptions) (internal.Roun
 	return syllabary, internal.SelectGroup
 }
 
-func SelectGroup(screen *termy.Termy, _ internal.UserOptions) (internal.RoundMode, internal.Action) {
+func SelectGroup(display *termy.Display, _ internal.UserOptions) (internal.RoundMode, internal.Action) {
 
-	group := selectionScreen(screen, MenuScreen{
+	group := selectionScreen(display, MenuScreen{
 		title: "Select mode",
 		// TODO: How do we include/exclude dakuten/handakuten?
 		menu: internal.Menu{
@@ -291,20 +291,20 @@ func SelectGroup(screen *termy.Termy, _ internal.UserOptions) (internal.RoundMod
 	return group, internal.SelectRound
 }
 
-func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
-	screen.ClearScreen()
-	screen.UseDefault()
-	screen.HideCur()
-	screen.Send()
-	defer screen.ShowCur()
+func selectionScreen(display *termy.Display, menu MenuScreen) internal.RoundMode {
+	display.ClearScreen()
+	display.UseDefault()
+	display.HideCur()
+	display.Send()
+	defer display.ShowCur()
 
-	rows, cols, _ := screen.Size()
+	rows, cols, _ := display.Size()
 	nameWidth := menu.menu.MaxNameLen()
 
 	yPos := menu.margin
-	screen.SetFg(4)
-	screen.Send()
-	screen.MoveTo(1, yPos)
+	display.SetFg(4)
+	display.Send()
+	display.MoveTo(1, yPos)
 	typewriter.WriteCentered(menu.title, cols)
 
 	menuSep := 3
@@ -317,22 +317,22 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
 		for i, item := range menu.menu {
 			// Highlight current selected option
 			if i == selected {
-				screen.SetFg(2)
+				display.SetFg(2)
 			} else {
-				screen.SetFg(5)
+				display.SetFg(5)
 			}
-			screen.Send()
+			display.Send()
 
-			screen.MoveTo(1, yPos)
+			display.MoveTo(1, yPos)
 			name, _ := typewriter.CenterStr(item.Name, nameWidth)
 			typewriter.WriteCentered("[( "+name+" )]", cols)
 			yPos += menuSep
 		}
 
-		screen.SetFg(4)
-		screen.Send()
-		screen.MoveTo(1, rows-menu.margin)
-		screen.ClearToEOL()
+		display.SetFg(4)
+		display.Send()
+		display.MoveTo(1, rows-menu.margin)
+		display.ClearToEOL()
 		typewriter.WriteCentered(menu.menu[selected].Description, cols)
 
 		res, _ := input.GetChar()
@@ -357,8 +357,8 @@ func selectionScreen(screen *termy.Termy, menu MenuScreen) internal.RoundMode {
 	}
 }
 
-func putCenteredAt(screen *termy.Termy, text string, at int, write func(string)) error {
-	rows, cols, err := screen.Size()
+func putCenteredAt(display *termy.Display, text string, at int, write func(string)) error {
+	rows, cols, err := display.Size()
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func putCenteredAt(screen *termy.Termy, text string, at int, write func(string))
 
 	xPos := (cols - size) / 2
 
-	screen.MoveTo(xPos, at)
+	display.MoveTo(xPos, at)
 	write(text)
 
 	return nil

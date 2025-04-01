@@ -39,33 +39,33 @@ var mainMenu = internal.Menu{
 }
 
 // Welcome presents the Welcome and selection screen.
-func Welcome(screen *termy.Termy, opts internal.UserOptions) (internal.Action, error) {
-	screen.HideCur()
-	defer screen.ShowCur()
+func Welcome(display *termy.Display, opts internal.UserOptions) (internal.Action, error) {
+	display.HideCur()
+	defer display.ShowCur()
 
 	// Every screen should take care of cleaning and setting up the display.
 	// We shouldn't take for granted that the previous screen cleaned everything up
 	// successfully.
-	screen.ClearScreen()
+	display.ClearScreen()
 	// TODO: Handle colours (default terminal theme, custom palette, etc)
-	screen.SetFgHex(palette.Grey)
-	screen.Send()
+	display.SetFgHex(palette.Grey)
+	display.Send()
 
-	putInfo(screen)
+	putInfo(display)
 
 	// TODO: Check for minimun height and width.
-	_, cols, _ := screen.Size()
+	_, cols, _ := display.Size()
 
 	yPos := 4
-	yPos = paintBanner(screen, yPos, cols)
-	yPos = putTitle(screen, yPos, cols)
+	yPos = paintBanner(display, yPos, cols)
+	yPos = putTitle(display, yPos, cols)
 
 	yPos += 8
 
 	selected := 0
 	var action internal.Action
 	for {
-		putMenu(screen, mainMenu, yPos, cols, selected)
+		putMenu(display, mainMenu, yPos, cols, selected)
 		action, selected, _ = handleInput(selected, mainMenu)
 		if action != internal.Continue {
 			return action, nil
@@ -73,57 +73,57 @@ func Welcome(screen *termy.Termy, opts internal.UserOptions) (internal.Action, e
 	}
 }
 
-func putInfo(screen *termy.Termy) {
+func putInfo(display *termy.Display) {
 	// TODO: Select dinamically the correct version.
 	typewriter.Write("Mec-Nyan's Kana-Master v0.1.0-beta.")
-	screen.MoveTo(1, 2)
+	display.MoveTo(1, 2)
 	typewriter.Write("Kana-Master is released under GPL-3.0 license.")
 }
 
-func paintBanner(screen *termy.Termy, yPos, cols int) int {
+func paintBanner(display *termy.Display, yPos, cols int) int {
 	headerLines := strings.Split(banner, "\n")
 
-	screen.SetFgHex(palette.Blue)
-	screen.Send()
+	display.SetFgHex(palette.Blue)
+	display.Send()
 
 	for _, line := range headerLines {
-		screen.MoveTo(1, yPos)
+		display.MoveTo(1, yPos)
 		typewriter.WriteCentered(line, cols)
 		yPos++
 	}
 	return yPos
 }
 
-func putTitle(screen *termy.Termy, yPos, cols int) int {
+func putTitle(display *termy.Display, yPos, cols int) int {
 	// For now I've remove the typing animations.
 	// I'm thinking the best way to add some nice animations later on.
-	screen.SetFgHex(palette.Purple)
-	screen.Send()
+	display.SetFgHex(palette.Purple)
+	display.Send()
 
 	yPos += 2
-	screen.MoveTo(1, yPos)
+	display.MoveTo(1, yPos)
 	typewriter.WriteCentered("    Welcome to Kana-master!    ", cols)
 
 	yPos += 2
-	screen.MoveTo(1, yPos)
+	display.MoveTo(1, yPos)
 	typewriter.WriteCentered("Learn hiragana and katakana from the command line", cols)
 
 	return yPos
 }
 
-func putMenu(screen *termy.Termy, menu internal.Menu, yPos, cols, sel int) {
+func putMenu(display *termy.Display, menu internal.Menu, yPos, cols, sel int) {
 
 	nameWidth := menu.MaxNameLen()
 	incr := 0
 	// Paint the selection menu.
 	for i, item := range menu {
 		if i == sel {
-			screen.SetFg(2)
+			display.SetFg(2)
 		} else {
-			screen.SetFg(4)
+			display.SetFg(4)
 		}
-		screen.Send()
-		screen.MoveTo(1, yPos+incr)
+		display.Send()
+		display.MoveTo(1, yPos+incr)
 		inner, _ := typewriter.CenterStr(item.Name, nameWidth)
 		typewriter.WriteCentered("[( "+inner+" )]", cols)
 		incr += 3
