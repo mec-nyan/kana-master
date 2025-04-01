@@ -20,40 +20,38 @@ import (
 func MainLoop(display *termy.Display, opts internal.UserOptions) error {
 	defer endMain(display, opts)
 
-	var round kana.KanaRow
+	round := kana.Rows[0]
 	var err error
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
 
 	for {
-		if action == internal.Welcome {
+		switch action {
+		case internal.Welcome:
 			action, err = welcome.Welcome(display, opts)
-			if err != nil {
-				return err
-			}
-		} else if action == internal.Play {
-			// The user hasn't selected a round yet, use the first one.
-			if round == nil {
-				round = kana.Rows[0]
-			}
+		case internal.Play:
 			action, err = play.Fight(display, round, opts)
-		} else if action == internal.Settings {
+		case internal.Settings:
 			opts, action = settings.SetOptions(display)
-		} else if action == internal.Select {
+		case internal.Select:
 			round, action = rounds.Selection(display, opts)
-		} else if action == internal.Continue {
+		case internal.Continue:
 			// TODO: When we reach the end, present an ending screen.
 			// Maybe continue to next stage (i.e. from "Hiragana" to
 			// "Katakana", from "rows" to "columns", etc).
 			round = rounds.NextRow(round)
 			action = internal.Play
-		} else if action == internal.Help {
+		case internal.Help:
 			action = help.Help(display)
-		} else if action == internal.Progress {
+		case internal.Progress:
 			return nil
-		} else if action == internal.Quit {
+		case internal.Quit:
 			return nil
+		}
+
+		if err != nil {
+			return err
 		}
 	}
 }
