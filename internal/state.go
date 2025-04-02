@@ -61,6 +61,7 @@ const (
 	Progress
 	Help
 	Quit
+	Exit
 )
 
 const (

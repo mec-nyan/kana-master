@@ -12,6 +12,7 @@ func kanaErr(bs []byte) error {
 	return fmt.Errorf("Invalid kana: %s", string(bs))
 }
 
+// TODO: What about multibyte codepoints?
 func GetChar() (byte, error) {
 	buff := make([]byte, 1)
 	_, err := os.Stdin.Read(buff)

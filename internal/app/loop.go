@@ -9,6 +9,7 @@ import (
 	"github.com/mec-nyan/kana-master/internal/help"
 	"github.com/mec-nyan/kana-master/internal/palette"
 	"github.com/mec-nyan/kana-master/internal/play"
+	"github.com/mec-nyan/kana-master/internal/quit"
 	"github.com/mec-nyan/kana-master/internal/rounds"
 	"github.com/mec-nyan/kana-master/internal/settings"
 	"github.com/mec-nyan/kana-master/internal/typewriter"
@@ -25,8 +26,14 @@ func MainLoop(display *termy.Display, opts internal.UserOptions) error {
 
 	// The first Action is always to show the welcome screen.
 	action := internal.Welcome
+	var previous internal.Action
+	var saved internal.Action
 
 	for {
+		// TODO: Maybe use channels.
+		saved = previous
+		previous = action
+
 		switch action {
 		case internal.Welcome:
 			action, err = welcome.Welcome(display, opts)
@@ -47,6 +54,9 @@ func MainLoop(display *termy.Display, opts internal.UserOptions) error {
 		case internal.Progress:
 			return nil
 		case internal.Quit:
+			action, err = quit.Confirm(display, saved)
+		case internal.Exit:
+			println("EXIT!")
 			return nil
 		}
 
