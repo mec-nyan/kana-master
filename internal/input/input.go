@@ -19,6 +19,19 @@ func GetChar() (byte, error) {
 	return buff[0], err
 }
 
+// TODO: What about multibyte codepoints?
+func GetOneOf(chars map[byte]bool) (byte, error) {
+	for {
+		c, err := GetChar()
+		if err != nil {
+			return 0, err
+		}
+		if chars[c] {
+			return c, nil
+		}
+	}
+}
+
 func GetNumber(maxTries int) (int, error) {
 	res := 0
 	count := 0

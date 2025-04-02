@@ -1,6 +1,7 @@
 package quit
 
 import (
+	"errors"
 	"os"
 
 	"github.com/mec-nyan/kana-master/internal"
@@ -9,8 +10,8 @@ import (
 )
 
 const (
-	key_enter  = ''
-	key_escape = ''
+	key_enter  = '\x0a'
+	key_escape = '\x1b'
 )
 
 func Confirm(display *termy.Display, previous internal.Action) (internal.Action, error) {
@@ -45,14 +46,21 @@ func Confirm(display *termy.Display, previous internal.Action) (internal.Action,
 	display.MoveTo(x_pos, y_pos)
 	os.Stdout.WriteString(prompt)
 
-	answer, err := input.GetChar()
+	answer, err := input.GetOneOf(map[byte]bool{
+		key_enter:  true,
+		key_escape: true,
+	})
+
 	if err != nil {
 		return internal.NoOp, err
 	}
 
-	if answer == 'y' {
+	switch answer {
+	case key_enter:
 		return internal.Exit, nil
+	case key_escape:
+		return previous, nil
 	}
 
-	return previous, nil
+	return internal.NoOp, errors.New("failed to get user input!")
 }
