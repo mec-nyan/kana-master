@@ -16,6 +16,7 @@ const (
 
 func Confirm(display *termy.Display, previous internal.Action) (internal.Action, error) {
 	display.ClearScreen()
+	defer display.Normal()
 
 	rows, cols, err := display.Size()
 	if err != nil {
@@ -28,9 +29,9 @@ func Confirm(display *termy.Display, previous internal.Action) (internal.Action,
 	}
 
 	x_pos := (cols - len(message[0])) / 2
-	y_pos := 4
+	y_pos := (rows / 3) * 2
 
-	display.SetFg(8).Italics(true).Send()
+	display.SetFg(4).Italics(true).Send()
 	display.MoveTo(x_pos, y_pos)
 	os.Stdout.WriteString(message[0])
 	y_pos++
@@ -40,7 +41,7 @@ func Confirm(display *termy.Display, previous internal.Action) (internal.Action,
 	prompt := "Are you sure? "
 
 	x_pos = (cols - len(prompt)) / 2
-	y_pos = rows / 2
+	y_pos = rows / 3
 
 	display.Normal().SetFg(2).Send()
 	display.MoveTo(x_pos, y_pos)
