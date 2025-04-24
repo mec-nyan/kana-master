@@ -4,6 +4,7 @@ package kana
 type (
 	Hiragana rune
 	Katakana rune
+	Digraph  string
 	Romaji   string
 )
 
@@ -102,6 +103,52 @@ const (
 	Hg_tsu Hiragana = Hg_tu
 	Hg_fu  Hiragana = Hg_hu
 	Hg_ji  Hiragana = Hg_zi
+
+	// Digraphs.
+	// TODO: Should we use strings or []Hiragana?
+	Hg_kya Digraph = "きゃ"
+	Hg_kyu Digraph = "きゅ"
+	Hg_kyo Digraph = "きょ"
+
+	Hg_sha Digraph = "しゃ"
+	Hg_shu Digraph = "しゅ"
+	Hg_sho Digraph = "しょ"
+
+	Hg_cha Digraph = "ちゃ"
+	Hg_chu Digraph = "ちゅ"
+	Hg_cho Digraph = "ちょ"
+
+	Hg_nya Digraph = "にゃ"
+	Hg_nyu Digraph = "にゅ"
+	Hg_nyo Digraph = "にょ"
+
+	Hg_mya Digraph = "みゃ"
+	Hg_myu Digraph = "みゅ"
+	Hg_myo Digraph = "みょ"
+
+	Hg_rya Digraph = "りゃ"
+	Hg_ryu Digraph = "りゅ"
+	Hg_ryo Digraph = "りょ"
+
+	Hg_gya Digraph = "ぎゃ"
+	Hg_gyu Digraph = "ぎゅ"
+	Hg_gyo Digraph = "ぎょ"
+
+	Hg_sya Digraph = "じゃ"
+	Hg_syu Digraph = "じゅ"
+	Hg_syo Digraph = "じょ"
+
+	Hg_tya Digraph = "ちゃ"
+	Hg_tyu Digraph = "ちゅ"
+	Hg_tyo Digraph = "ちょ"
+
+	Hg_bya Digraph = "びゃ"
+	Hg_byu Digraph = "びゅ"
+	Hg_byo Digraph = "びょ"
+
+	Hg_pya Digraph = "ぴゃ"
+	Hg_pyu Digraph = "ぴゅ"
+	Hg_pyo Digraph = "ぴょ"
 
 	// End Hiragana.
 
