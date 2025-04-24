@@ -246,6 +246,56 @@ const (
 	Kk_tsu Katakana = Kk_tu
 	Kk_fu  Katakana = Kk_hu
 	Kk_ji  Katakana = Kk_zi
+
+	// Digraphs.
+	// TODO: Should we use strings or []Katakana?
+	Kk_kya Digraph = "キャ"
+	Kk_kyu Digraph = "キュ"
+	Kk_kyo Digraph = "キョ"
+
+	Kk_sha Digraph = "シャ"
+	Kk_shu Digraph = "シュ"
+	Kk_sho Digraph = "ショ"
+
+	Kk_cha Digraph = "チャ"
+	Kk_chu Digraph = "シュ"
+	Kk_cho Digraph = "チョ"
+
+	Kk_nya Digraph = "ニャ"
+	Kk_nyu Digraph = "ニュ"
+	Kk_nyo Digraph = "ニョ"
+
+	Kk_hya Digraph = "ヒャ"
+	Kk_hyu Digraph = "ヒュ"
+	Kk_hyo Digraph = "ヒョ"
+
+	Kk_mya Digraph = "ミャ"
+	Kk_myu Digraph = "みゅ"
+	Kk_myo Digraph = "ミョ"
+
+	Kk_rya Digraph = "リャ"
+	Kk_ryu Digraph = "リュ"
+	Kk_ryo Digraph = "リョ"
+
+	Kk_gya Digraph = "ギャ"
+	Kk_gyu Digraph = "ギュ"
+	Kk_gyo Digraph = "ギョ"
+
+	Kk_sya Digraph = "シャ"
+	Kk_syu Digraph = "シュ"
+	Kk_syo Digraph = "ショ"
+
+	Kk_tya Digraph = "チャ"
+	Kk_tyu Digraph = "チュ"
+	Kk_tyo Digraph = "チョ"
+
+	Kk_bya Digraph = "ビャ"
+	Kk_byu Digraph = "ビュ"
+	Kk_byo Digraph = "ビョ"
+
+	Kk_pya Digraph = "ピャ"
+	Kk_pyu Digraph = "ピュ"
+	Kk_pyo Digraph = "ピョ"
 )
 
 type Kana struct {
