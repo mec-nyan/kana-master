@@ -122,6 +122,10 @@ const (
 	Hg_nyu Digraph = "にゅ"
 	Hg_nyo Digraph = "にょ"
 
+	Hg_hya Digraph = "ひゃ"
+	Hg_hyu Digraph = "ひゅ"
+	Hg_hyo Digraph = "ひょ"
+
 	Hg_mya Digraph = "みゃ"
 	Hg_myu Digraph = "みゅ"
 	Hg_myo Digraph = "みょ"
