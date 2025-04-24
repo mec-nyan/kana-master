@@ -90,7 +90,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
 						typewriter.WriteCentered(
 							fmt.Sprintf("\"%c\"  %c    %c    %c",
-								round[0].Romaji[0],
+								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Hiragana,
 								round[2].Hiragana,
 								round[4].Hiragana,
