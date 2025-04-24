@@ -425,6 +425,30 @@ var List = map[Romaji]KanaRow{
 	},
 }
 
+type KanaGroup struct {
+	basic, dakuten, handakuten KanaRow
+}
+
+var Groups = map[Romaji]KanaGroup{
+	"ka": {
+		basic:   List["ka"],
+		dakuten: List["ga"],
+	},
+	"sa": {
+		basic:   List["sa"],
+		dakuten: List["za"],
+	},
+	"ta": {
+		basic:   List["ta"],
+		dakuten: List["da"],
+	},
+	"ha": {
+		basic:      List["ha"],
+		dakuten:    List["ba"],
+		handakuten: List["pa"],
+	},
+}
+
 func GetHiragana(row KanaRow) []Hiragana {
 	hiragana := []Hiragana{}
 	for _, kana := range row {
