@@ -15,6 +15,7 @@ type Kana struct {
 	Katakana
 }
 
+// We'll group the kanas in several ways, for practice.
 type KanaRow []Kana
 
 var Rows = []KanaRow{
@@ -257,6 +258,38 @@ var Groups = map[Romaji]KanaGroup{
 	},
 }
 
+// Let's try to group kanas by their "main" consonant.
+// Note: Not every row will have diacitics nor digraphs.
+// I.e. the "vowels" row, etc.
+
+type Diacritics struct {
+	Dakuten    KanaRow
+	Handakuten KanaRow
+}
+
+type KanaSet struct {
+	Monographs KanaRow
+	Diacritics
+	Digraphs KanaRow
+}
+
+type KanaTable map[string]KanaSet
+
+var Table = KanaTable{
+	"a": {
+		Monographs: List["a"],
+	},
+	"k": {
+		Monographs: List["ka"],
+		Diacritics: Diacritics{
+			Dakuten: List["ga"],
+		},
+		// TODO: Add rows for digraphs.
+		Digraphs: KanaRow{},
+	},
+}
+
+// GetHiragana returns the list of hiragana glyphs for the given row.
 func GetHiragana(row KanaRow) []Hiragana {
 	hiragana := []Hiragana{}
 	for _, kana := range row {
@@ -265,6 +298,7 @@ func GetHiragana(row KanaRow) []Hiragana {
 	return hiragana
 }
 
+// GetKatakana returns the list of katakana glyphs for the given row.
 func GetKatakana(row KanaRow) []Katakana {
 	katakana := []Katakana{}
 	for _, kana := range row {
@@ -273,6 +307,7 @@ func GetKatakana(row KanaRow) []Katakana {
 	return katakana
 }
 
+// GetRomaji returns the list of romaji strings for the given row.
 func GetRomaji(row KanaRow) []Romaji {
 	romaji := []Romaji{}
 	for _, kana := range row {
