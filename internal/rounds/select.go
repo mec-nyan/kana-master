@@ -73,125 +73,40 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 
 	yPos := (rows - len(rounds)*2) / 2
 	selected := 0
+	// Event loop.
 	for {
 		yPos := yPos
 		for i, round := range rounds {
+
+			name, group := getRoundLine(round, mode)
+			pointer := "  "
+			// Double "name" so we center the "group"
+			size := kana.CountCols(name + " " + group + pointer)
+			padding := (cols - size) / 2
+			display.MoveTo(padding, yPos)
+
+			if i == selected {
+				display.SetFg(3)
+			} else {
+				display.SetFg(242)
+			}
+			display.Send()
+			typewriter.Write(name)
 			if i == selected {
 				display.SetFg(2)
 			} else {
 				display.SetFg(5)
 			}
 			display.Send()
-			display.MoveTo(1, yPos)
-			yPos += 2
-
-			if mode.Group == internal.RowMode {
-				if mode.Syllabary == internal.HiraganaMode {
-					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
-						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %s    %s    %s",
-								strings.ToUpper(string(round[0].Romaji))[0],
-								round[0].Hiragana,
-								round[2].Hiragana,
-								round[4].Hiragana,
-							),
-							cols,
-						)
-					} else {
-						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %s %s %s %s %s",
-								strings.ToUpper(string(round[0].Romaji))[0],
-								round[0].Hiragana,
-								round[1].Hiragana,
-								round[2].Hiragana,
-								round[3].Hiragana,
-								round[4].Hiragana,
-							),
-							cols,
-						)
-					}
-				} else if mode.Syllabary == internal.KatakanaMode {
-					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
-						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %s    %s    %s",
-								strings.ToUpper(string(round[0].Romaji))[0],
-								round[0].Katakana,
-								round[2].Katakana,
-								round[4].Katakana,
-							),
-							cols,
-						)
-					} else {
-						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %s %s %s %s %s",
-								strings.ToUpper(string(round[0].Romaji))[0],
-								round[0].Katakana,
-								round[1].Katakana,
-								round[2].Katakana,
-								round[3].Katakana,
-								round[4].Katakana,
-							),
-							cols,
-						)
-					}
-				} else if mode.Syllabary == internal.PairsMode {
-					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
-						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  (%s, %s)            (%s, %s)            (%s, %s)",
-								strings.ToUpper(string(round[0].Romaji))[0],
-								round[0].Hiragana, round[0].Katakana,
-								round[2].Hiragana, round[2].Katakana,
-								round[4].Hiragana, round[4].Katakana,
-							),
-							cols,
-						)
-					} else {
-						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  (%s  %s)  (%s  %s)  (%s  %s)  (%s  %s)  (%s  %s)",
-								strings.ToUpper(string(round[0].Romaji))[0],
-								round[0].Hiragana, round[0].Katakana,
-								round[1].Hiragana, round[1].Katakana,
-								round[2].Hiragana, round[2].Katakana,
-								round[3].Hiragana, round[3].Katakana,
-								round[4].Hiragana, round[4].Katakana,
-							),
-							cols,
-						)
-					}
-				}
-			} else if mode.Group == internal.ColMode {
-				line := "\"" + strings.ToUpper(string(round[0].Romaji)) + "\""
-				if mode.Syllabary == internal.HiraganaMode {
-					for _, n := range round {
-						c := n.Hiragana
-						if c == "" {
-							line += "   "
-						} else {
-							line += fmt.Sprintf(" %s", c)
-						}
-					}
-				} else if mode.Syllabary == internal.KatakanaMode {
-					for _, n := range round {
-						c := n.Katakana
-						if c == "" {
-							line += "   "
-						} else {
-							line += fmt.Sprintf(" %s", c)
-						}
-					}
-				} else if mode.Syllabary == internal.PairsMode {
-					for _, n := range round {
-						h := n.Hiragana
-						k := n.Hiragana
-						if h == "" {
-							line += "      "
-						} else {
-							line += fmt.Sprintf(" %s %s,", h, k)
-						}
-					}
-				}
-				typewriter.WriteCentered(line, cols)
+			typewriter.Write(group)
+			if i == selected {
+				display.SetFg(3).Send()
+				typewriter.Write(pointer)
+			} else {
+				typewriter.Write("   ")
 			}
+
+			yPos += 2
 		}
 
 		// TODO: Check for terminal size!
@@ -355,6 +270,46 @@ func selectionScreen(display *termy.Display, menu MenuScreen) internal.RoundMode
 			return menu.menu[selected].Value
 		}
 	}
+}
+
+func getRoundLine(round kana.KanaRow, mode RoundMode) (name, group string) {
+
+	if mode.Group == internal.RowMode {
+		name = "[" + strings.ToUpper(string(round[0].Romaji))[:1] + "]"
+	} else if mode.Group == internal.ColMode {
+		name = "[" + strings.ToUpper(string(round[0].Romaji)) + "]"
+	}
+
+	if mode.Syllabary == internal.HiraganaMode {
+		for _, n := range round {
+			c := n.Hiragana
+			if c == "" {
+				group += "   "
+			} else {
+				group += fmt.Sprintf(" %s", c)
+			}
+		}
+	} else if mode.Syllabary == internal.KatakanaMode {
+		for _, n := range round {
+			c := n.Katakana
+			if c == "" {
+				group += "   "
+			} else {
+				group += fmt.Sprintf(" %s", c)
+			}
+		}
+	} else if mode.Syllabary == internal.PairsMode {
+		for _, n := range round {
+			h := n.Hiragana
+			k := n.Hiragana
+			if h == "" {
+				group += "      "
+			} else {
+				group += fmt.Sprintf(" %s %s,", h, k)
+			}
+		}
+	}
+	return
 }
 
 func putCenteredAt(display *termy.Display, text string, at int, write func(string)) error {
