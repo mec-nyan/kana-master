@@ -89,7 +89,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 				if mode.Syllabary == internal.HiraganaMode {
 					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
 						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %c    %c    %c",
+							fmt.Sprintf("\"%c\"  %s    %s    %s",
 								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Hiragana,
 								round[2].Hiragana,
@@ -99,7 +99,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 						)
 					} else {
 						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %c %c %c %c %c",
+							fmt.Sprintf("\"%c\"  %s %s %s %s %s",
 								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Hiragana,
 								round[1].Hiragana,
@@ -113,7 +113,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 				} else if mode.Syllabary == internal.KatakanaMode {
 					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
 						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %c    %c    %c",
+							fmt.Sprintf("\"%c\"  %s    %s    %s",
 								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Katakana,
 								round[2].Katakana,
@@ -123,7 +123,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 						)
 					} else {
 						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  %c %c %c %c %c",
+							fmt.Sprintf("\"%c\"  %s %s %s %s %s",
 								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Katakana,
 								round[1].Katakana,
@@ -137,7 +137,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 				} else if mode.Syllabary == internal.PairsMode {
 					if round[0].Romaji == "ya" || round[0].Romaji == "wa" {
 						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  (%c, %c)            (%c, %c)            (%c, %c)",
+							fmt.Sprintf("\"%c\"  (%s, %s)            (%s, %s)            (%s, %s)",
 								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Hiragana, round[0].Katakana,
 								round[2].Hiragana, round[2].Katakana,
@@ -147,7 +147,7 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 						)
 					} else {
 						typewriter.WriteCentered(
-							fmt.Sprintf("\"%c\"  (%c  %c)  (%c  %c)  (%c  %c)  (%c  %c)  (%c  %c)",
+							fmt.Sprintf("\"%c\"  (%s  %s)  (%s  %s)  (%s  %s)  (%s  %s)  (%s  %s)",
 								strings.ToUpper(string(round[0].Romaji))[0],
 								round[0].Hiragana, round[0].Katakana,
 								round[1].Hiragana, round[1].Katakana,
@@ -164,29 +164,29 @@ func SelectRound(display *termy.Display, mode RoundMode, opts internal.UserOptio
 				if mode.Syllabary == internal.HiraganaMode {
 					for _, n := range round {
 						c := n.Hiragana
-						if c == 0 {
+						if c == "" {
 							line += "   "
 						} else {
-							line += fmt.Sprintf(" %c", c)
+							line += fmt.Sprintf(" %s", c)
 						}
 					}
 				} else if mode.Syllabary == internal.KatakanaMode {
 					for _, n := range round {
 						c := n.Katakana
-						if c == 0 {
+						if c == "" {
 							line += "   "
 						} else {
-							line += fmt.Sprintf(" %c", c)
+							line += fmt.Sprintf(" %s", c)
 						}
 					}
 				} else if mode.Syllabary == internal.PairsMode {
 					for _, n := range round {
 						h := n.Hiragana
 						k := n.Hiragana
-						if h == 0 {
+						if h == "" {
 							line += "      "
 						} else {
-							line += fmt.Sprintf(" %c %c,", h, k)
+							line += fmt.Sprintf(" %s %s,", h, k)
 						}
 					}
 				}
