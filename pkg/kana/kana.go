@@ -290,6 +290,101 @@ var Table = KanaTable{
 			},
 		},
 	},
+	"t": {
+		Basic: KanaGroup{
+			Monographs: List["ta"],
+			Digraphs: KanaRow{
+				{"tya", "cha", Hg_tya, Kk_tya},
+				{"tyu", "chu", Hg_tyu, Kk_tyu},
+				{"tyo", "cho", Hg_tyo, Kk_tyo},
+			},
+		},
+		Dakuten: KanaGroup{
+			Monographs: List["da"],
+			Digraphs: KanaRow{
+				{"dya", "ja", Hg_dya, Kk_dya},
+				{"dyu", "ju", Hg_dyu, Kk_dyu},
+				{"dyo", "jo", Hg_dyo, Kk_dyo},
+			},
+		},
+	},
+	"n": {
+		Basic: KanaGroup{
+			Monographs: List["na"],
+			Digraphs: KanaRow{
+				{"nya", "", Hg_nya, Kk_nya},
+				{"nyu", "", Hg_nyu, Kk_nyu},
+				{"nyo", "", Hg_nyo, Kk_nyo},
+			},
+		},
+	},
+	"h": {
+		Basic: KanaGroup{
+			Monographs: List["ha"],
+			Digraphs: KanaRow{
+				{"hya", "", Hg_hya, Kk_hya},
+				{"hyu", "", Hg_hyu, Kk_hyu},
+				{"hyo", "", Hg_hyo, Kk_hyo},
+			},
+		},
+		Dakuten: KanaGroup{
+			Monographs: List["ba"],
+			Digraphs: KanaRow{
+				{"bya", "", Hg_bya, Kk_bya},
+				{"byu", "", Hg_byu, Kk_byu},
+				{"byo", "", Hg_byo, Kk_byo},
+			},
+		},
+		Handakuten: KanaGroup{
+			Monographs: List["pa"],
+			Digraphs: KanaRow{
+				{"pya", "", Hg_pya, Kk_pya},
+				{"pyu", "", Hg_pyu, Kk_pyu},
+				{"pyo", "", Hg_pyo, Kk_pyo},
+			},
+		},
+	},
+	"m": {
+		Basic: KanaGroup{
+			Monographs: List["ma"],
+			Digraphs: KanaRow{
+				{"mya", "", Hg_mya, Kk_mya},
+				{"myu", "", Hg_myu, Kk_myu},
+				{"myo", "", Hg_myo, Kk_myo},
+			},
+		},
+	},
+	"y": {
+		Basic: KanaGroup{
+			Monographs: List["ya"],
+		},
+	},
+	"r": {
+		Basic: KanaGroup{
+			Monographs: List["ra"],
+			Digraphs: KanaRow{
+				{"rya", "", Hg_rya, Kk_rya},
+				{"ryu", "", Hg_ryu, Kk_ryu},
+				{"ryo", "", Hg_ryo, Kk_ryo},
+			},
+		},
+	},
+	"w": {
+		Basic: KanaGroup{
+			Monographs: KanaRow{
+				{"wa", "", Hg_wa, Kk_wa},
+				{"wo", "", Hg_wo, Kk_wo},
+			},
+		},
+	},
+	// Should we call this "N" instead of "nn"?
+	"nn": {
+		Basic: KanaGroup{
+			Monographs: KanaRow{
+				{"n", "nn", Hg_n, Kk_n},
+			},
+		},
+	},
 }
 
 // GetHiragana returns the list of hiragana glyphs for the given row.
