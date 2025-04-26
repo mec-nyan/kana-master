@@ -235,57 +235,60 @@ var List = map[Romaji]KanaRow{
 }
 
 type KanaGroup struct {
-	basic, dakuten, handakuten KanaRow
-}
-
-var Groups = map[Romaji]KanaGroup{
-	"ka": {
-		basic:   List["ka"],
-		dakuten: List["ga"],
-	},
-	"sa": {
-		basic:   List["sa"],
-		dakuten: List["za"],
-	},
-	"ta": {
-		basic:   List["ta"],
-		dakuten: List["da"],
-	},
-	"ha": {
-		basic:      List["ha"],
-		dakuten:    List["ba"],
-		handakuten: List["pa"],
-	},
+	Monographs, Digraphs KanaRow
 }
 
 // Let's try to group kanas by their "main" consonant.
 // Note: Not every row will have diacitics nor digraphs.
 // I.e. the "vowels" row, etc.
 
-type Diacritics struct {
-	Dakuten    KanaRow
-	Handakuten KanaRow
-}
-
 type KanaSet struct {
-	Monographs KanaRow
-	Diacritics
-	Digraphs KanaRow
+	Basic, Dakuten, Handakuten KanaGroup
 }
 
 type KanaTable map[string]KanaSet
 
 var Table = KanaTable{
 	"a": {
-		Monographs: List["a"],
+		Basic: KanaGroup{
+			Monographs: List["a"],
+		},
 	},
 	"k": {
-		Monographs: List["ka"],
-		Diacritics: Diacritics{
-			Dakuten: List["ga"],
+		Basic: KanaGroup{
+			Monographs: List["ka"],
+			Digraphs: KanaRow{
+				{"kya", "", Hg_kya, Kk_kya},
+				{"kyu", "", Hg_kyu, Kk_kyu},
+				{"kyo", "", Hg_kyo, Kk_kyo},
+			},
 		},
-		// TODO: Add rows for digraphs.
-		Digraphs: KanaRow{},
+		Dakuten: KanaGroup{
+			Monographs: List["ga"],
+			Digraphs: KanaRow{
+				{"gya", "", Hg_gya, Kk_gya},
+				{"gyu", "", Hg_gyu, Kk_gyu},
+				{"gyo", "", Hg_gyo, Kk_gyo},
+			},
+		},
+	},
+	"s": {
+		Basic: KanaGroup{
+			Monographs: List["sa"],
+			Digraphs: KanaRow{
+				{"sya", "sha", Hg_sya, Kk_sya},
+				{"syu", "shu", Hg_syu, Kk_syu},
+				{"syo", "sho", Hg_syo, Kk_syo},
+			},
+		},
+		Dakuten: KanaGroup{
+			Monographs: List["za"],
+			Digraphs: KanaRow{
+				{"zya", "ja", Hg_zya, Kk_zya},
+				{"zyu", "ju", Hg_zyu, Kk_zyu},
+				{"zyo", "jo", Hg_zyo, Kk_zyo},
+			},
+		},
 	},
 }
 
