@@ -62,11 +62,17 @@ func intro(display *termy.Display, row kana.KanaRow, opts internal.UserOptions) 
 
 	x, y := 4, 2
 	display.MoveTo(x, y)
-	write("Let's start with these pairs")
+	write("Let's start with these sounds.")
 	time.Sleep(delay)
 	y += 2
 	display.MoveTo(x, y)
-	write("romaji: (hiragana, katakana)")
+	if opts.PractisePairs {
+		write("romaji - (hiragana, katakana)")
+	} else if opts.PractiseHiragana {
+		write("romaji - hiragana")
+	} else if opts.PractiseKatakana {
+		write("romaji - katakana")
+	}
 	time.Sleep(delay)
 
 	display.SetFg(colours.White)
@@ -74,7 +80,13 @@ func intro(display *termy.Display, row kana.KanaRow, opts internal.UserOptions) 
 	for _, v := range row {
 		y += 2
 		display.MoveTo(x, y)
-		write(string(v.Romaji) + ": (" + string(v.Hiragana) + ", " + string(v.Katakana) + ")")
+		if opts.PractisePairs {
+			write(string(v.Romaji) + " - (" + string(v.Hiragana) + ", " + string(v.Katakana) + ")")
+		} else if opts.PractiseHiragana {
+			write(string(v.Romaji) + " - " + string(v.Hiragana))
+		} else if opts.PractiseKatakana {
+			write(string(v.Romaji) + " - " + string(v.Katakana))
+		}
 		time.Sleep(delay)
 	}
 
@@ -141,6 +153,8 @@ Loop:
 		if shuffledRow[0] == prevShuffle[len(prevShuffle)-1] {
 			continue
 		}
+		// Save current shuffle.
+		prevShuffle = shuffledRow[:]
 		// Play the row.
 		for _, currentKana := range shuffledRow {
 			y := y
@@ -170,7 +184,13 @@ Loop:
 			// Show the hiragana and katakana kanas.
 			y += 2
 			display.MoveTo(x, y)
-			write(string(currentKana.Hiragana) + " " + string(currentKana.Katakana) + " => ")
+			if opts.PractisePairs {
+				write(string(currentKana.Hiragana) + " " + string(currentKana.Katakana) + " => ")
+			} else if opts.PractiseHiragana {
+				write(string(currentKana.Hiragana) + " => ")
+			} else if opts.PractiseKatakana {
+				write(string(currentKana.Katakana) + " => ")
+			}
 
 			// TODO: Handle error here.
 			kana, _ := input.GetInput()

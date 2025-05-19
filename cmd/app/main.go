@@ -25,6 +25,8 @@ func main() {
 	opts := internal.UserOptions{
 		Animate:       !noAnim,
 		CustomPalette: palette,
+		// Unless otherwise selected, practice with pairs.
+		PractisePairs: true,
 	}
 
 	err := app.Run(opts)

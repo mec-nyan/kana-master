@@ -42,7 +42,7 @@ func MainLoop(display *termy.Display, opts internal.UserOptions) error {
 		case internal.Settings:
 			opts, action = settings.SetOptions(display)
 		case internal.Select:
-			round, action = rounds.Selection(display, opts)
+			round, action, opts = rounds.Selection(display, opts)
 		case internal.Continue:
 			// TODO: When we reach the end, present an ending screen.
 			// Maybe continue to next stage (i.e. from "Hiragana" to

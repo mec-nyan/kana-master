@@ -21,7 +21,7 @@ type MenuScreen struct {
 }
 
 func Selection(display *termy.Display, opts internal.UserOptions) (
-	kana.KanaRow, internal.Action,
+	kana.KanaRow, internal.Action, internal.UserOptions,
 ) {
 	// First we select what we want to practise.
 	action := internal.SelectSyllabary
@@ -31,7 +31,7 @@ func Selection(display *termy.Display, opts internal.UserOptions) (
 		if action == internal.SelectSyllabary {
 			mode.Syllabary, action = SelectSyllabary(display, opts)
 			if action == internal.Back {
-				return kana.KanaRow{}, internal.Welcome
+				return kana.KanaRow{}, internal.Welcome, opts
 			}
 		} else if action == internal.SelectGroup {
 			mode.Group, action = SelectGroup(display, opts)
@@ -44,7 +44,21 @@ func Selection(display *termy.Display, opts internal.UserOptions) (
 				action = internal.SelectGroup
 				continue
 			}
-			return round, action
+
+			opts.PractiseHiragana = false
+			opts.PractiseKatakana = false
+			opts.PractisePairs = false
+			
+			switch mode.Syllabary {
+			case internal.HiraganaMode:
+				opts.PractiseHiragana = true
+			case internal.KatakanaMode:
+				opts.PractiseKatakana = true
+			case internal.PairsMode:
+				opts.PractisePairs = true
+			}
+
+			return round, action, opts
 		}
 	}
 }
